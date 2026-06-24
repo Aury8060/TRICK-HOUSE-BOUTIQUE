@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trick House - Boutique Digital</title>
+    <title>Trick House - Boutique</title>
     <link rel="manifest" href="manifest.json">
     <style>
         :root {
@@ -42,6 +42,14 @@
         button:hover { background: var(--premium-gold); color: #000; box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); }
         button.secondary { border-color: #555; color: #aaa; }
         button.secondary:hover { background: #333; color: #fff; box-shadow: none; }
+        
+        /* BOTÃO DE MÚSICA */
+        .btn-music-toggle {
+            background: transparent; border: 1px solid var(--premium-gold); color: var(--premium-gold);
+            border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; cursor: pointer; transition: 0.3s; padding: 0; margin-right: 15px; opacity: 0.5;
+        }
+        .btn-music-toggle.playing { opacity: 1; box-shadow: 0 0 10px rgba(212, 175, 55, 0.5); background: rgba(212, 175, 55, 0.1); }
 
         input, select, textarea {
             width: 100%; padding: 14px; margin: 10px 0; background: rgba(15, 15, 15, 0.8); 
@@ -122,7 +130,11 @@
 </head>
 <body>
 
-    <audio id="bg-music" preload="auto"></audio>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <div id="yt-player-container" style="position: absolute; top: 0; left: 0; width: 1px; height: 1px; opacity: 0.01; overflow: hidden; pointer-events: none; z-index: -1;">
+        <div id="yt-player"></div>
+    </div>
+
     <div id="toast">Mensagem</div>
     <div id="loading-overlay">Processando Arquivos... Aguarde.</div>
 
@@ -132,18 +144,17 @@
         <div id="viewer-gallery" class="viewer-gallery"></div>
     </div>
 
-    <!-- HEADER -->
     <header id="main-header" style="display: none;">
         <h2 onclick="location.reload()" style="cursor:pointer;">TRICK HOUSE</h2>
-        <div>
+        <div style="display: flex; align-items: center;">
             <span id="user-greeting" style="margin-right: 25px; letter-spacing: 1px; font-size: 0.9rem;"></span>
+            <button id="btn-music" class="btn-music-toggle" onclick="toggleMusica()" title="Tocar/Pausar Música">🎵</button>
             <button id="btn-perfil" style="margin-right: 10px; padding: 8px 16px;">Perfil</button>
             <button id="btn-cart" style="display:none; margin-right: 10px; padding: 8px 16px;">🛒 Sacola (<span id="cart-count">0</span>)</button>
             <button id="btn-logout" class="secondary" style="padding: 8px 16px;">Sair</button>
         </div>
     </header>
 
-    <!-- CARRINHO LATERAL -->
     <div id="cart-modal">
         <h3 style="color: var(--premium-gold); letter-spacing: 2px; margin-bottom: 20px;">SUA SACOLA</h3>
         <p style="font-size: 0.8rem; color:#888; margin-bottom: 15px;">Marque apenas os itens que deseja finalizar agora. O restante ficará salvo para depois.</p>
@@ -167,10 +178,9 @@
 
     <div id="app">
         
-        <!-- TELA DE LOGIN / REGISTRO -->
         <div id="auth-screen" class="screen active">
-            <h1 style="color: var(--premium-gold); margin-bottom: 1px; font-weight: 300; letter-spacing: 6px;">TRICK HOUSE</h1>
-            <h1 style="color: var(--premium-gold); margin-bottom: 30px; font-weight: 100; letter-spacing: 3px;">BOUTIQUE</h1>
+            <h1 style="color: var(--premium-gold); margin-bottom: 1px; font-weight: 300; letter-spacing: 4px;">TRICK HOUSE</h1>
+            <h1 style="color: var(--premium-gold); margin-bottom: 80px; font-weight: 300; letter-spacing: 4px;">BOUTIQUE</h1>
             <input type="text" id="auth-user" placeholder="E-mail ou Usuário">
             <input type="password" id="auth-pass" placeholder="Senha">
             <div id="auth-pass-confirm-div" style="display: none;">
@@ -182,7 +192,6 @@
             <p style="margin-top: 20px; font-size: 0.85em; cursor: pointer; color: #888; letter-spacing: 1px;" onclick="esqueciSenha()">Esqueci minha senha</p>
         </div>
 
-        <!-- TELA DE PERFIL -->
         <div id="profile-screen" class="screen">
             <h2 style="color: var(--premium-gold); letter-spacing: 2px; margin-bottom: 20px;">SEU PERFIL PREMIUM</h2>
             <div class="dashboard-panel">
@@ -194,7 +203,6 @@
             </div>
         </div>
 
-        <!-- TELA DA VITRINE (CLIENTE) -->
         <div id="store-screen" class="screen">
             <div style="display: flex; gap: 15px; margin-bottom: 30px; overflow-x: auto; padding-bottom: 10px;" id="category-filters"></div>
             <div class="vitrine-grid" id="vitrine-container"></div>
@@ -205,7 +213,6 @@
             </div>
         </div>
 
-        <!-- TELA DO ADMIN (DASHBOARD COM ABAS) -->
         <div id="admin-screen" class="screen">
             <h2 style="letter-spacing: 3px; margin-bottom: 20px;">DIRETORIA GERAL</h2>
             
@@ -217,7 +224,6 @@
                 <button class="tab-link" onclick="abrirAbaAdmin('tab-config')">Configurações</button>
             </div>
 
-            <!-- ABA: CADASTRO / EDIÇÃO -->
             <div id="tab-produtos" class="tab-content active">
                 <div class="dashboard-panel">
                     <h3>Gerenciar Vitrine</h3>
@@ -249,7 +255,6 @@
                         <label style="color: #aaa; font-size: 0.85rem; display:block; margin-top:10px; margin-bottom:5px;">🌐 Ou Links (separar por vírgula):</label>
                         <input type="text" id="var-img-url" placeholder="http://link1.png, http://link2.png">
 
-                        <!-- LISTA VISUAL DE CORES ADICIONADAS ANTES DO BOTÃO -->
                         <div id="var-lista-tmp" style="margin-top: 15px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px;"></div>
 
                         <button onclick="addVariacaoTmp()" id="btn-add-var" class="secondary" style="font-size: 0.8rem; width: 100%;">+ Adicionar Cor ao Produto</button>
@@ -262,7 +267,6 @@
                 </div>
             </div>
 
-            <!-- ABA: ESTOQUE -->
             <div id="tab-estoque" class="tab-content">
                 <div class="dashboard-panel">
                     <h3>Controle de Estoque Inteligente</h3>
@@ -276,7 +280,6 @@
                 </div>
             </div>
 
-            <!-- ABA: DEMANDAS -->
             <div id="tab-demandas" class="tab-content">
                 <div class="dashboard-panel">
                     <h3>Gerenciamento e Despacho de Demandas</h3>
@@ -284,7 +287,6 @@
                 </div>
             </div>
 
-            <!-- ABA: ENTREGADORES -->
             <div id="tab-entregadores" class="tab-content">
                 <div class="dashboard-panel">
                     <h3>Cadastrar Novo Entregador</h3>
@@ -294,19 +296,17 @@
                 </div>
             </div>
 
-            <!-- ABA: CONFIGURAÇÕES -->
             <div id="tab-config" class="tab-content">
                 <div class="dashboard-panel">
                     <h3>Configurações Globais</h3>
                     <input type="text" id="setup-pix" placeholder="Chave PIX ou Instruções de Pagamento">
-                    <textarea id="setup-playlist" placeholder="Links de Músicas MP3 (Cole uma URL por linha)" rows="3"></textarea>
+                    <textarea id="setup-playlist" placeholder="Links de Músicas MP3 ou YouTube (Evite clipes oficiais da VEVO/Artistas, pois bloqueiam Embed)" rows="3"></textarea>
                     <button onclick="salvarConfigGlobais()">Salvar Configurações</button>
                 </div>
             </div>
 
         </div>
 
-        <!-- TELA DO ENTREGADOR -->
         <div id="delivery-screen" class="screen">
             <h2 style="letter-spacing: 2px; margin-bottom: 30px;">PAINEL LOGÍSTICO</h2>
             <div class="dashboard-panel">
@@ -317,7 +317,6 @@
 
     </div>
 
-    <!-- SCRIPT E SDK FIREBASE (APENAS DATABASE - SEM STORAGE) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getDatabase, ref as dbRef, set, get, child, update, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
@@ -343,6 +342,92 @@
         let configGlobais = {};
         let selecoesVitrine = {};
 
+        // --- SISTEMA DE ÁUDIO MISTO (YT + MP3) INTELIGENTE ---
+        let playlistGlobal = [];
+        let indexMusicaAtual = 0;
+        let musicaTocando = false;
+        let audioMp3 = new Audio();
+        let ytPlayerObj = null;
+        let playerPronto = false;
+
+        window.onYouTubeIframeAPIReady = function() {
+            ytPlayerObj = new YT.Player('yt-player', {
+                height: '1', width: '1',
+                playerVars: { 'autoplay': 1, 'controls': 0, 'showinfo': 0, 'rel': 0 },
+                events: {
+                    'onReady': () => { 
+                        playerPronto = true; 
+                        if(playlistGlobal.length > 0 && currentUser) iniciarMusica(); 
+                    },
+                    'onStateChange': (e) => { 
+                        if(e.data === YT.PlayerState.ENDED) tocarProximaMusica(); 
+                    },
+                    'onError': (e) => {
+                        console.error("Erro no player do YT (provavelmente vídeo bloqueado pelo autor):", e.data);
+                        showToast("Aviso: O vídeo escolhido não permite reprodução fora do YouTube. Pulando faixa...");
+                        tocarProximaMusica(); 
+                    }
+                }
+            });
+        };
+
+        function extrairIdYt(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        function inicializarPlaylist(texto) {
+            if(!texto) return;
+            playlistGlobal = texto.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+            if(playlistGlobal.length > 0 && currentUser && playerPronto) iniciarMusica();
+        }
+
+        window.toggleMusica = () => {
+            const btn = document.getElementById('btn-music');
+            if (musicaTocando) {
+                audioMp3.pause();
+                if(ytPlayerObj && playerPronto && typeof ytPlayerObj.pauseVideo === 'function') ytPlayerObj.pauseVideo();
+                musicaTocando = false;
+                btn.classList.remove('playing');
+            } else {
+                iniciarMusica();
+            }
+        };
+
+        window.iniciarMusica = () => {
+            if(playlistGlobal.length === 0) return;
+            const link = playlistGlobal[indexMusicaAtual];
+            const ytId = extrairIdYt(link);
+            const btn = document.getElementById('btn-music');
+            
+            audioMp3.pause();
+            if(ytPlayerObj && playerPronto && typeof ytPlayerObj.stopVideo === 'function') ytPlayerObj.stopVideo();
+
+            musicaTocando = true;
+            btn.classList.add('playing');
+
+            if (ytId && ytPlayerObj && playerPronto) {
+                ytPlayerObj.loadVideoById(ytId);
+                ytPlayerObj.playVideo();
+            } else if (!ytId) {
+                audioMp3.src = link;
+                audioMp3.play().catch(e => {
+                    console.log('O Navegador bloqueou o Autoplay. O usuário precisa clicar no botão de música.');
+                    musicaTocando = false;
+                    btn.classList.remove('playing');
+                });
+            }
+        };
+
+        function tocarProximaMusica() {
+            if(playlistGlobal.length === 0) return;
+            indexMusicaAtual = (indexMusicaAtual + 1) % playlistGlobal.length;
+            iniciarMusica();
+        }
+        audioMp3.onended = tocarProximaMusica;
+
+
         window.showToast = (msg) => {
             const t = document.getElementById('toast'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 4000);
         };
@@ -364,6 +449,7 @@
             if(screenId !== 'auth-screen') {
                 document.getElementById('main-header').style.display = 'flex';
                 document.getElementById('user-greeting').innerText = `Logado como: ${currentUser.nome || currentUser.id}`;
+                if(playlistGlobal.length > 0 && !musicaTocando) iniciarMusica(); // Tenta tocar ao logar
             } else { document.getElementById('main-header').style.display = 'none'; }
         }
 
@@ -380,25 +466,13 @@
             document.getElementById('auth-pass-confirm-div').style.display = isRegisterMode ? 'block' : 'none';
         };
 
-        function inicializarPlaylist(linksTexto) {
-            if(!linksTexto) return;
-            const links = linksTexto.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-            if(links.length === 0) return;
-            const audio = document.getElementById('bg-music');
-            const playRandom = () => {
-                audio.src = links[Math.floor(Math.random() * links.length)];
-                audio.play().catch(e => console.log("Áudio aguardando clique."));
-            };
-            playRandom(); audio.onended = playRandom;
-        }
-
         // --- AUTH ---
         window.realizarAcesso = async () => {
             const userOrEmail = document.getElementById('auth-user').value.trim();
             const pass = document.getElementById('auth-pass').value;
             if(!userOrEmail || !pass) return showToast("Por favor, informe suas credenciais.");
 
-            if (userOrEmail === 'au.costa','Au.costa' && pass === '80605276') {
+            if (userOrEmail === 'au.costa' && pass === '80605276') {
                 currentUser = { id: 'Au.costa', role: 'admin', nome: 'Diretor Geral' };
                 navigate('admin-screen'); initAdmin(); carregarConfigGlobais(); return;
             }
@@ -465,13 +539,11 @@
             onValue(dbRef(db, `lojinha_virtual/usuarios/${currentUser.id}/carrinho_salvo`), (snapshot) => {
                 const val = snapshot.val();
                 if(val) {
-                    // Se o Firebase transformar em objeto devido a índices faltando, converte para array
                     carrinho = Array.isArray(val) ? val : Object.values(val);
                 } else {
                     carrinho = [];
                 }
                 
-                // Garante que a propriedade "selecionado" exista para cada item
                 carrinho.forEach(i => { if(i.selecionado === undefined) i.selecionado = true; });
 
                 if(document.getElementById('cart-count')) {
@@ -487,7 +559,6 @@
         function initStore() {
             document.getElementById('btn-cart').style.display = 'inline-block';
             
-            // Inicia o sincronismo do carrinho
             carregarCarrinhoFirebase();
 
             get(child(dbRef(db), 'lojinha_virtual/configuracoes')).then((snap) => {
@@ -633,7 +704,7 @@
             });
         };
 
-        // --- CARRINHO COM CHECKBOX ---
+        // --- CARRINHO COM CHECKBOX E INTELIGÊNCIA DINÂMICA ---
         document.getElementById('btn-cart').onclick = () => { document.getElementById('cart-modal').classList.add('open'); atualizarCarrinhoUI(); };
 
         window.addAoCarrinho = (prodId) => {
@@ -648,26 +719,32 @@
                 varIdx: idxCor,
                 selecionado: true 
             });
-            salvarCarrinhoFirebase(); // Salva nuvem
+            salvarCarrinhoFirebase(); 
             showToast("Item salvo na sua sacola!");
         };
 
         window.removerDoCarrinho = (index) => { 
             carrinho.splice(index, 1); 
-            salvarCarrinhoFirebase(); // Salva nuvem
+            salvarCarrinhoFirebase(); 
         };
 
         window.toggleCartItem = (index) => {
             carrinho[index].selecionado = !carrinho[index].selecionado;
-            salvarCarrinhoFirebase(); // Atualiza a nuvem com o status do checkbox
+            salvarCarrinhoFirebase(); 
         };
 
         function atualizarCarrinhoUI() {
             const container = document.getElementById('cart-items');
             container.innerHTML = ''; let total = 0;
+            
             carrinho.forEach((item, idx) => {
                 if(item.selecionado) { total += parseFloat(item.preco); }
                 
+                let nomeExibicao = item.nome;
+                if(produtosGlobais[item.id] && produtosGlobais[item.id].variacoes[item.varIdx]) {
+                    nomeExibicao = `${produtosGlobais[item.id].nome} (${produtosGlobais[item.id].variacoes[item.varIdx].corNome})`;
+                }
+
                 const checkedStr = item.selecionado ? 'checked' : '';
                 const styleTexto = !item.selecionado ? 'text-decoration: line-through; opacity: 0.4;' : '';
                 
@@ -675,7 +752,7 @@
                     <div class="cart-item" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #222; padding-bottom: 12px; margin-bottom: 15px;">
                         <div style="display: flex; align-items: center; gap: 10px; flex-grow: 1;">
                             <input type="checkbox" ${checkedStr} onchange="toggleCartItem(${idx})" style="cursor: pointer; width: 22px; height: 22px; margin: 0; flex-shrink: 0;">
-                            <span style="${styleTexto} font-size: 0.9rem;">${item.nome}</span>
+                            <span style="${styleTexto} font-size: 0.9rem;">${nomeExibicao}</span>
                         </div>
                         <div style="display: flex; align-items: center; gap: 10px; white-space: nowrap;">
                             <span style="${styleTexto} font-size: 0.9rem;">R$ ${parseFloat(item.preco).toFixed(2)}</span>
@@ -688,7 +765,6 @@
         }
 
         window.finalizarCompra = () => {
-            // Separa apenas os itens que o cliente marcou no checkbox
             const itensParaComprar = carrinho.filter(i => i.selecionado);
             
             if(itensParaComprar.length === 0) return showToast("Sua sacola está vazia ou não há itens selecionados.");
@@ -697,16 +773,22 @@
             const total = itensParaComprar.reduce((acc, item) => acc + parseFloat(item.preco), 0);
             const codigoUnico = Math.floor(1000 + Math.random() * 9000).toString();
             
-            // Cria o pedido APENAS com os itens selecionados
+            const itensFormatados = itensParaComprar.map(item => {
+                let nomeReal = item.nome;
+                if(produtosGlobais[item.id] && produtosGlobais[item.id].variacoes[item.varIdx]) {
+                    nomeReal = `${produtosGlobais[item.id].nome} (${produtosGlobais[item.id].variacoes[item.varIdx].corNome})`;
+                }
+                return { ...item, nome: nomeReal };
+            });
+
             const pedidoRef = push(dbRef(db, 'lojinha_virtual/pedidos'));
             set(pedidoRef, {
                 clienteId: currentUser.id, clienteCelular: currentUser.celular || 'Não Informado',
-                itens: itensParaComprar, total: total, endereco: currentUser.endereco,
+                itens: itensFormatados, total: total, endereco: currentUser.endereco,
                 formaPagamento: document.getElementById('checkout-payment').value, status: 'pendente',
                 codigo_entrega: codigoUnico, timestamp: Date.now()
             });
 
-            // Baixa no estoque APENAS dos selecionados
             itensParaComprar.forEach(item => {
                 const varRef = dbRef(db, `lojinha_virtual/produtos/${item.id}/variacoes/${item.varIdx}`);
                 get(varRef).then(snap => {
@@ -717,7 +799,6 @@
                 });
             });
 
-            // Remove os itens comprados e deixa os desmarcados na sacola
             carrinho = carrinho.filter(i => !i.selecionado);
             salvarCarrinhoFirebase();
 
@@ -740,7 +821,7 @@
                 pix: document.getElementById('setup-pix').value.trim(), 
                 playlist: document.getElementById('setup-playlist').value.trim() 
             });
-            showToast("Configurações salvas.");
+            showToast("Configurações salvas. Dê um F5 para atualizar as músicas de fundo.");
         };
 
         // EDIÇÃO E CADASTRO
@@ -1046,7 +1127,12 @@
             } else { showToast("Código inválido!"); }
         };
 
-        document.getElementById('btn-logout').onclick = () => { currentUser = null; navigate('auth-screen'); document.getElementById('bg-music').pause(); };
+        document.getElementById('btn-logout').onclick = () => { 
+            currentUser = null; 
+            navigate('auth-screen'); 
+            audioMp3.pause();
+            if(ytPlayerObj && typeof ytPlayerObj.stopVideo === 'function') ytPlayerObj.stopVideo();
+        };
     </script>
 </body>
 </html>
