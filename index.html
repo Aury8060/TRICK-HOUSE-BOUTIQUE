@@ -9,21 +9,17 @@
     
     <style>
         :root {
-            /* Variáveis CSS baseadas em temas (modificáveis pelo Admin) */
             --bg-color: #0a0a0a;
             --premium-gold: #D4AF37;
             --text-color: #f5f5f5;
             --main-font: 'Cinzel', serif;
-            
-            /* Constantes e Efeitos */
             --card-bg: rgba(20, 20, 20, 0.7);
-            --border-color: rgba(255, 255, 255, 0.15); /* Coringa para bordas */
+            --border-color: rgba(255, 255, 255, 0.15);
             --spotlight: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 65%);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--main-font); transition: background-color 0.4s, color 0.4s; }
         
-        /* O background foi ajustado para aceitar imagens via JS no construtor de temas */
         body { 
             background-color: var(--bg-color); 
             color: var(--text-color); 
@@ -34,7 +30,6 @@
         .screen { display: none; padding: 30px 20px; max-width: 1200px; margin: 0 auto; width: 100%; }
         .screen.active { display: block; }
 
-        /* HEADER SOFISTICADO */
         header {
             display: flex; justify-content: space-between; align-items: center;
             padding: 20px 40px; background: rgba(10, 10, 10, 0.85);
@@ -43,10 +38,8 @@
         }
         
         header h2 { font-size: 1.8rem; letter-spacing: 4px; color: var(--premium-gold); text-shadow: 0 0 12px rgba(0,0,0,0.5); }
-
         .header-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; }
 
-        /* BOTÕES & INPUTS */
         button {
             background: transparent; color: var(--premium-gold); border: 1px solid var(--premium-gold);
             padding: 12px 24px; border-radius: 4px; cursor: pointer; font-weight: bold;
@@ -62,17 +55,14 @@
         }
         input:focus, select:focus, textarea:focus { border-color: var(--premium-gold); outline: none; box-shadow: 0 0 8px rgba(0,0,0,0.5); background: rgba(0,0,0,0.8); }
 
-        /* AUTENTICAÇÃO */
         #auth-screen {
             max-width: 450px; margin: 8vh auto; background: var(--card-bg);
             padding: 40px; border-radius: 8px; border: 1px solid var(--border-color);
             backdrop-filter: blur(15px); text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.8);
         }
 
-        /* VITRINE & NICHOS (Layout Inteligente) */
         .vitrine-grid { 
             display: grid; 
-            /* Começa com cards de no mínimo 260px (PC/Tablet grandes) */
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
             gap: 30px; 
             padding: 20px 0; 
@@ -106,7 +96,6 @@
         }
         .cor-bolinha.active { border-color: var(--premium-gold); transform: scale(1.2); }
 
-        /* DASHBOARD ADMIN & TABS */
         .admin-nav { display: flex; gap: 5px; overflow-x: auto; border-bottom: 1px solid var(--border-color); margin-bottom: 30px; padding-bottom: 5px; -webkit-overflow-scrolling: touch; }
         .admin-nav button { border: none; background: transparent; padding: 12px 20px; font-size: 0.9rem; color: #888; border-bottom: 2px solid transparent; white-space: nowrap; }
         .admin-nav button.active { color: var(--premium-gold); border-bottom-color: var(--premium-gold); }
@@ -118,13 +107,11 @@
         .dashboard-panel { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px; border-radius: 8px; margin-bottom: 30px; backdrop-filter: blur(10px); }
         .dashboard-panel h3 { color: var(--premium-gold); margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase; font-size: 1.1rem; }
 
-        /* ESTOQUE CORES */
         .estoque-item { padding: 15px; margin-bottom: 10px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-color); background: rgba(0,0,0,0.4); }
         .estoque-ok { border-left: 4px solid #00c850; }
         .estoque-alerta { border-left: 4px solid #ffa500; }
         .estoque-critico { border-left: 4px solid #ff3232; }
 
-        /* TOAST E LIGHTBOX E CARRINHO */
         #toast { position: fixed; bottom: 30px; right: 30px; background: #000; color: var(--premium-gold); border: 1px solid var(--premium-gold); padding: 15px 30px; font-weight: bold; border-radius: 4px; letter-spacing: 1px; display: none; z-index: 3000; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
         #cart-modal { position: fixed; top: 0; right: -450px; width: 450px; height: 100%; background: rgba(10,10,10,0.98); border-left: 1px solid var(--premium-gold); padding: 30px; transition: right 0.4s ease; z-index: 500; overflow-y: auto; backdrop-filter: blur(20px); }
         #cart-modal.open { right: 0; box-shadow: -10px 0 30px rgba(0,0,0,0.8); }
@@ -139,35 +126,23 @@
         .viewer-thumb:hover, .viewer-thumb.active { border-color: var(--premium-gold); opacity: 1; }
         #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; display: none; justify-content: center; align-items: center; color: var(--premium-gold); font-size: 1.5rem; letter-spacing: 2px; }
 
-        /* ========================================================
-           ✨ AUTO-RESPONSIVIDADE INTELIGENTE (Mobile & Tablets) ✨ 
-           ======================================================== */
         @media (max-width: 850px) {
             header { flex-direction: column; padding: 15px; gap: 15px; text-align: center; }
             .header-controls { justify-content: center; width: 100%; }
             #user-greeting { margin-right: 10px; display: block; width: 100%; margin-bottom: 10px; }
-            
-            /* Nichos se adaptam para caber no celular (até 2 colunas dependendo do tamanho) */
             .vitrine-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding: 10px 0; }
             .nicho { height: auto; min-height: 380px; padding: 15px 10px; }
             .produto-img { max-height: 140px; }
             .produto-info h3 { font-size: 0.95rem; }
             .produto-preco { font-size: 1.1rem; }
             button { padding: 10px 15px; font-size: 0.8rem; }
-            
-            /* Ajustes Finos */
             .screen { padding: 20px 15px; }
             .dashboard-panel { padding: 20px 15px; }
-            
-            /* Carrinho Ocupa a tela toda no celular */
             #cart-modal { width: 100vw; right: -100vw; padding: 20px; border-left: none; }
-            
-            /* Toast menor e centralizado no mobile */
             #toast { right: 50%; transform: translateX(50%); bottom: 20px; width: 90%; text-align: center; font-size: 0.9rem; padding: 12px; }
         }
 
         @media (max-width: 400px) {
-            /* Em telas muito muito pequenas (iPhone SE antigo), força 1 coluna para não espremer */
             .vitrine-grid { grid-template-columns: 1fr; }
             .nicho { height: auto; min-height: auto; }
             .produto-img { max-height: 180px; }
@@ -197,29 +172,54 @@
 
     <div id="cart-modal">
         <h3 style="color: var(--premium-gold); letter-spacing: 2px; margin-bottom: 20px;">SUA SACOLA</h3>
-        <p style="font-size: 0.8rem; color:#aaa; margin-bottom: 15px;">Marque apenas os itens que deseja finalizar agora. O restante ficará salvo para depois.</p>
-        <div id="cart-items"></div>
-        <h2 style="margin: 25px 0; font-weight: 300; border-top: 1px solid var(--border-color); padding-top: 15px;">
-            Total Selecionado: <br><span style="color:var(--premium-gold)">R$ <span id="cart-total">0.00</span></span>
-        </h2>
         
-        <div id="checkout-section">
-            <h4 style="color: #aaa; font-size: 0.9rem; margin-bottom: 5px;">Forma de Pagamento:</h4>
-            <div id="payment-info-view" style="background: rgba(0,0,0,0.5); padding: 12px; font-size: 0.9rem; border-left: 2px solid var(--premium-gold); margin-bottom: 15px; border-radius: 4px;">
-                Carregando dados...
+        <div id="cart-normal-view">
+            <p style="font-size: 0.8rem; color:#aaa; margin-bottom: 15px;">Marque apenas os itens que deseja finalizar agora. O restante ficará salvo para depois.</p>
+            <div id="cart-items"></div>
+            <h2 style="margin: 25px 0; font-weight: 300; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                Total Selecionado: <br><span style="color:var(--premium-gold)">R$ <span id="cart-total">0.00</span></span>
+            </h2>
+            
+            <div id="checkout-section">
+                <h4 style="color: #aaa; font-size: 0.9rem; margin-bottom: 5px;">Forma de Pagamento:</h4>
+                <div id="payment-info-view" style="background: rgba(0,0,0,0.5); padding: 12px; font-size: 0.9rem; border-left: 2px solid var(--premium-gold); margin-bottom: 15px; border-radius: 4px;">
+                    Carregando dados...
+                </div>
+                
+                <select id="checkout-payment">
+                    <option value="pix">PIX Inteligente (QR Code)</option>
+                    <option value="cartao">Cartão de Crédito (Na entrega)</option>
+                </select>
+                <button onclick="finalizarCompra()" style="width: 100%; margin-top: 15px; font-size: 1rem; padding: 15px;">Confirmar e Finalizar</button>
+            </div>
+            <button onclick="document.getElementById('cart-modal').classList.remove('open')" class="secondary" style="width: 100%; margin-top: 15px;">Continuar Comprando</button>
+        </div>
+
+        <div id="pix-checkout-section" style="display: none; text-align: center; margin-top: 10px;">
+            <h3 style="color: var(--text-color); margin-bottom: 5px; font-weight: 400;">Finalizar Pagamento</h3>
+            <p style="font-size: 0.85rem; color: #aaa; margin-bottom: 15px;">Escaneie o QR Code ou use a chave Copia e Cola no app do seu banco.</p>
+            
+            <div style="background: rgba(0,0,0,0.5); border: 1px solid var(--premium-gold); border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                <div style="font-size: 0.8rem; color: #888; text-transform: uppercase;">Valor Exato do PIX</div>
+                <div style="font-size: 2rem; color: var(--premium-gold); font-weight: bold; margin: 5px 0;">R$ <span id="pix-valor-display">0.00</span></div>
+                
+                <div id="pix-timer" style="font-size: 1.2rem; color: #ff3232; font-weight: bold; margin-top: 10px; letter-spacing: 2px;">10:00</div>
+                <div style="font-size: 0.7rem; color: #aaa;">Tempo para pagamento</div>
+            </div>
+
+            <div style="background: #fff; padding: 15px; border-radius: 8px; display: inline-block; margin-bottom: 15px; box-shadow: 0 0 20px rgba(212,175,55,0.2);">
+                <img id="pix-qrcode" src="" alt="QR Code PIX" style="width: 220px; height: 220px;">
             </div>
             
-            <select id="checkout-payment">
-                <option value="pix">PIX</option>
-                <option value="cartao">Cartão de Crédito (Na entrega)</option>
-            </select>
-            <button onclick="finalizarCompra()" style="width: 100%; margin-top: 15px; font-size: 1rem; padding: 15px;">Confirmar e Finalizar</button>
+            <textarea id="pix-copia-cola" readonly style="font-family: monospace; font-size: 0.75rem; text-align: center; height: 75px; word-break: break-all; resize: none; border-color: var(--premium-gold);"></textarea>
+            <button onclick="copiarPix()" class="secondary" style="margin-bottom: 15px; width: 100%;">📋 Copiar Código PIX</button>
+            
+            <button onclick="confirmarEnvioPedidoPix()" style="width: 100%; padding: 15px; background: #00c850; border-color: #00c850; color: #fff; font-size: 1rem;">✅ Já Realizei o Pagamento</button>
+            <button onclick="cancelarPix()" class="secondary" style="width: 100%; margin-top: 10px; border-color: #ff3232; color: #ff3232;">Cancelar Pagamento</button>
         </div>
-        <button onclick="document.getElementById('cart-modal').classList.remove('open')" class="secondary" style="width: 100%; margin-top: 15px;">Continuar Comprando</button>
     </div>
 
     <div id="app">
-        
         <div id="auth-screen" class="screen active">
             <h1 style="color: var(--premium-gold); margin-bottom: 5px; font-weight: 300; letter-spacing: 4px;">TRICK HOUSE</h1>
             <h1 style="color: var(--text-color); margin-bottom: 40px; font-weight: 300; letter-spacing: 6px; font-size: 1.2rem; opacity: 0.8;">BOUTIQUE</h1>
@@ -250,9 +250,7 @@
 
         <div id="store-screen" class="screen">
             <div style="display: flex; gap: 10px; margin-bottom: 30px; overflow-x: auto; padding-bottom: 10px; -webkit-overflow-scrolling: touch;" id="category-filters"></div>
-            
             <div class="vitrine-grid" id="vitrine-container"></div>
-            
             <div id="client-orders" class="dashboard-panel" style="margin-top: 50px; display: none;">
                 <h3>Meus Pedidos & Prazos</h3>
                 <div id="client-orders-list"></div>
@@ -273,7 +271,6 @@
             <div id="tab-produtos" class="tab-content active">
                 <div class="dashboard-panel">
                     <h3>Gerenciar Vitrine</h3>
-                    
                     <label style="color: #aaa; font-size: 0.85rem; display:block; margin-bottom:5px;">Ação (Novo ou Editar Existente):</label>
                     <select id="select-prod-edit" onchange="carregarProdutoEdicao()">
                         <option value="">-- CRIAR NOVO PRODUTO --</option>
@@ -287,35 +284,30 @@
                     
                     <div style="border: 1px solid var(--border-color); padding: 15px; margin: 15px 0; background: rgba(0,0,0,0.3); border-radius: 4px;">
                         <h4 style="color: var(--premium-gold); font-size: 0.9rem; margin-bottom: 15px;">Adicionar Variação de Cor / Estoque / Fotos</h4>
-                        
                         <div style="display:flex; flex-wrap: wrap; gap:10px; margin-bottom:10px;">
-                            <input type="color" id="var-cor" value="#D4AF37" style="height:45px; width:60px; padding:2px; cursor:pointer;" title="Escolha a cor">
-                            <input type="text" id="var-cor-nome" placeholder="Nome da Cor (Obrigatório)" style="flex:1; min-width: 150px; margin:0;">
+                            <input type="color" id="var-cor" value="#D4AF37" style="height:45px; width:60px; padding:2px; cursor:pointer;">
+                            <input type="text" id="var-cor-nome" placeholder="Nome da Cor" style="flex:1; min-width: 150px; margin:0;">
                             <input type="number" id="var-estoque" placeholder="Estoque" style="width: 100px; margin:0;">
                             <input type="text" id="var-tamanho" placeholder="Tamanhos" style="width: 120px; margin:0;">
                         </div>
-                        
-                        <label style="color: #aaa; font-size: 0.85rem; display:block; margin-bottom:5px;">📂 Arquivos Locais (Deixe vazio caso esteja apenas editando estoque):</label>
+                        <label style="color: #aaa; font-size: 0.85rem; display:block; margin-bottom:5px;">📂 Arquivos Locais:</label>
                         <input type="file" id="var-img-file" accept="image/*" multiple style="background: rgba(0,0,0,0.5);">
-                        
                         <label style="color: #aaa; font-size: 0.85rem; display:block; margin-top:10px; margin-bottom:5px;">🌐 Ou Links (separar por vírgula):</label>
                         <input type="text" id="var-img-url" placeholder="http://link1.png, http://link2.png">
-
                         <div id="var-lista-tmp" style="margin-top: 15px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px;"></div>
-
                         <button onclick="addVariacaoTmp()" id="btn-add-var" class="secondary" style="font-size: 0.8rem; width: 100%;">+ Adicionar Cor ao Produto</button>
                     </div>
 
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                         <button onclick="salvarProduto()" style="flex: 1; min-width: 200px;">Salvar Produto</button>
-                        <button onclick="excluirProdutoAtual()" class="secondary" id="btn-excluir-prod" style="display: none; border-color: red; color: red;">Excluir Permanentemente</button>
+                        <button onclick="excluirProdutoAtual()" class="secondary" id="btn-excluir-prod" style="display: none; border-color: red; color: red;">Excluir</button>
                     </div>
                 </div>
             </div>
 
             <div id="tab-estoque" class="tab-content">
                 <div class="dashboard-panel">
-                    <h3>Controle de Estoque Inteligente</h3>
+                    <h3>Controle de Estoque</h3>
                     <input type="text" id="busca-estoque" placeholder="🔍 Buscar por código, nome ou cor..." style="margin-bottom: 20px;" onkeyup="filtrarEstoque()">
                     <div style="display: flex; gap: 15px; margin-bottom: 20px; font-size: 0.85rem; color:#aaa; flex-wrap: wrap;">
                         <span><span style="display:inline-block; width:12px; height:12px; background:#00c850; border-radius:50%;"></span> Ideal </span>
@@ -328,15 +320,15 @@
 
             <div id="tab-demandas" class="tab-content">
                 <div class="dashboard-panel">
-                    <h3>Gerenciamento e Despacho de Demandas</h3>
+                    <h3>Gerenciamento de Demandas</h3>
                     <div id="admin-orders-list"></div>
                 </div>
             </div>
 
             <div id="tab-entregadores" class="tab-content">
                 <div class="dashboard-panel">
-                    <h3>Cadastrar Novo Membro da Equipe Logística</h3>
-                    <input type="email" id="entregador-email" placeholder="E-mail de Login do Entregador">
+                    <h3>Cadastrar Entregador</h3>
+                    <input type="email" id="entregador-email" placeholder="E-mail do Entregador">
                     <input type="password" id="entregador-senha" placeholder="Senha Temporária">
                     <button onclick="cadastrarEntregador()">Registrar Entregador</button>
                 </div>
@@ -344,20 +336,20 @@
 
             <div id="tab-config" class="tab-content">
                 <div class="dashboard-panel">
-                    <h3>Configurações Globais & PIX</h3>
-                    <input type="text" id="setup-pix" placeholder="Chave PIX Oficial ou Mensagem de Cobrança">
+                    <h3>Configurações Globais & PIX Automático</h3>
+                    <p style="font-size: 0.8rem; color:#aaa; margin-bottom: 10px;">Para o PIX automático funcionar, insira sua chave exata abaixo. Se for telefone, use formato +5511999999999 sem traços.</p>
+                    <input type="text" id="setup-pix" placeholder="Sua Chave PIX Oficial">
                     
                     <div style="border: 1px solid var(--border-color); padding: 20px; margin: 30px 0; background: rgba(0,0,0,0.3); border-radius: 8px;">
-                        <h4 style="color: var(--premium-gold); font-size: 1.1rem; margin-bottom: 20px;">🎨 Construtor de Temas (Aparência da Loja)</h4>
-                        <p style="font-size: 0.8rem; color:#aaa; margin-bottom: 20px;">Personalize as cores e a aparência da sua boutique. As mudanças afetam você e todos os seus clientes em tempo real.</p>
+                        <h4 style="color: var(--premium-gold); font-size: 1.1rem; margin-bottom: 20px;">🎨 Construtor de Temas</h4>
                         
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px;">
                             <div>
-                                <label style="font-size: 0.8rem; color: #ddd; display:block; margin-bottom: 5px;">Cor do Fundo Geral:</label>
+                                <label style="font-size: 0.8rem; color: #ddd; display:block; margin-bottom: 5px;">Cor do Fundo:</label>
                                 <input type="color" id="theme-bg" value="#0a0a0a" style="height: 50px; padding: 2px; cursor: pointer;">
                             </div>
                             <div>
-                                <label style="font-size: 0.8rem; color: #ddd; display:block; margin-bottom: 5px;">Cor de Destaque (Ouro):</label>
+                                <label style="font-size: 0.8rem; color: #ddd; display:block; margin-bottom: 5px;">Cor Destaque (Ouro):</label>
                                 <input type="color" id="theme-gold" value="#D4AF37" style="height: 50px; padding: 2px; cursor: pointer;">
                             </div>
                             <div>
@@ -366,22 +358,21 @@
                             </div>
                         </div>
 
-                        <label style="font-size: 0.8rem; color: #ddd; display:block; margin-bottom: 5px;">Estilo da Letra (Fonte Principal):</label>
+                        <label style="font-size: 0.8rem; color: #ddd; display:block; margin-bottom: 5px;">Fonte Principal:</label>
                         <select id="theme-font">
-                            <option value="'Cinzel', serif">Cinzel (Clássica/Elegante - Padrão TrickHouse)</option>
-                            <option value="'Montserrat', sans-serif">Montserrat (Moderna/Arredondada)</option>
-                            <option value="'Playfair Display', serif">Playfair (Boutique Francesa)</option>
-                            <option value="'Roboto', sans-serif">Roboto (Simples e Limpa)</option>
+                            <option value="'Cinzel', serif">Cinzel (Clássica/Elegante)</option>
+                            <option value="'Montserrat', sans-serif">Montserrat (Moderna)</option>
+                            <option value="'Playfair Display', serif">Playfair (Boutique)</option>
+                            <option value="'Roboto', sans-serif">Roboto (Simples)</option>
                         </select>
 
-                        <label style="font-size: 0.8rem; color: #ddd; display:block; margin-top: 15px; margin-bottom: 5px;">Link de uma Imagem de Fundo (Opcional):</label>
-                        <input type="text" id="theme-bg-img" placeholder="http://seusite.com/fundo.jpg (Deixe em branco para fundo liso)">
+                        <label style="font-size: 0.8rem; color: #ddd; display:block; margin-top: 15px; margin-bottom: 5px;">Link Fundo (Opcional):</label>
+                        <input type="text" id="theme-bg-img" placeholder="http://seusite.com/fundo.jpg">
                     </div>
 
-                    <button onclick="salvarConfigGlobais()" style="width: 100%; padding: 15px; font-size: 1.1rem;">Salvar e Aplicar Layout</button>
+                    <button onclick="salvarConfigGlobais()" style="width: 100%; padding: 15px; font-size: 1.1rem;">Salvar Configurações</button>
                 </div>
             </div>
-
         </div>
 
         <div id="delivery-screen" class="screen">
@@ -391,7 +382,6 @@
                 <div id="delivery-orders-list"></div>
             </div>
         </div>
-
     </div>
 
     <script type="module">
@@ -417,8 +407,11 @@
         let carrinho = [];
         let produtosGlobais = {};
         let selecoesVitrine = {};
+        
+        window.chavePixAdmin = ""; 
+        let pixInterval = null;
+        let valorTotalPixTemporario = 0;
 
-        // UTILITÁRIOS GERAIS
         window.showToast = (msg) => {
             const t = document.getElementById('toast'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 4000);
         };
@@ -434,7 +427,6 @@
             });
         };
 
-        // NAVEGAÇÃO
         function navigate(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
@@ -456,11 +448,10 @@
 
         window.alternarModoAuth = () => {
             isRegisterMode = !isRegisterMode;
-            document.getElementById('btn-toggle-auth').innerText = isRegisterMode ? "Já possui credenciais? Login" : "Criar Conta Elegante";
+            document.getElementById('btn-toggle-auth').innerText = isRegisterMode ? "Já possui credenciais? Login" : "Criar Conta";
             document.getElementById('auth-pass-confirm-div').style.display = isRegisterMode ? 'block' : 'none';
         };
 
-        // --- SISTEMA DE THEME CUSTOMIZER ---
         function aplicarTemaReal(temaObj) {
             if(!temaObj) return;
             const root = document.documentElement;
@@ -479,19 +470,19 @@
             }
         }
 
-        // Listener Global de Tema para todos (Cliente, Admin, Entregador)
         onValue(dbRef(db, 'lojinha_virtual/configuracoes'), (snap) => {
             if(snap.exists()) {
                 const conf = snap.val();
+                window.chavePixAdmin = conf.pix || ""; 
                 if(document.getElementById('payment-info-view')) {
-                    document.getElementById('payment-info-view').innerText = conf.pix || "À combinar.";
+                    document.getElementById('payment-info-view').innerHTML = window.chavePixAdmin 
+                        ? `<span style="color:var(--premium-gold);">Chave PIX Ativa e Validada no Sistema.</span>` 
+                        : "Pagamento apenas na entrega.";
                 }
                 if(conf.tema) aplicarTemaReal(conf.tema);
             }
         });
 
-
-        // --- AUTH & PERSISTÊNCIA (LOCALSTORAGE) ---
         function salvarLogin() {
             localStorage.setItem('trickhouse_user_v2', JSON.stringify(currentUser));
         }
@@ -516,7 +507,7 @@
             }
 
             const userKey = sanitizeKey(userOrEmail);
-            get(child(dbRef(db), `lojinha_virtual/usuarios/${userKey}`)).then((snapshot) => {
+            get(dbRef(db, `lojinha_virtual/usuarios/${userKey}`)).then((snapshot) => {
                 if (isRegisterMode) {
                     const pConf = document.getElementById('auth-pass-confirm').value;
                     if(pass !== pConf) return showToast("As senhas divergem.");
@@ -544,7 +535,7 @@
             const email = prompt("Digite seu e-mail cadastrado:");
             if(email) {
                 const userKey = sanitizeKey(email);
-                get(child(dbRef(db), `lojinha_virtual/usuarios/${userKey}`)).then((snapshot) => {
+                get(dbRef(db, `lojinha_virtual/usuarios/${userKey}`)).then((snapshot) => {
                     if(snapshot.exists()) {
                         const novaSenha = prompt("Digite a nova senha:");
                         const confSenha = prompt("Confirme a nova senha:");
@@ -557,22 +548,21 @@
             }
         };
 
-        // --- PERFIL ---
         document.getElementById('btn-perfil').onclick = () => {
             document.getElementById('prof-nome').value = currentUser.nome || '';
             document.getElementById('prof-celular').value = currentUser.celular || '';
             document.getElementById('prof-endereco').value = currentUser.endereco || '';
             navigate('profile-screen');
         };
+        
         window.salvarPerfilCliente = () => {
             const nome = document.getElementById('prof-nome').value.trim(), cel = document.getElementById('prof-celular').value.trim(), end = document.getElementById('prof-endereco').value.trim();
             update(dbRef(db, `lojinha_virtual/usuarios/${currentUser.id}`), { nome, celular: cel, endereco: end });
             currentUser.nome = nome; currentUser.celular = cel; currentUser.endereco = end;
-            salvarLogin(); // Atualiza dados no localStorage também
+            salvarLogin(); 
             showToast("Perfil atualizado perfeitamente."); navigate('store-screen');
         };
 
-        // --- LÓGICA DO CARRINHO PERSISTENTE ---
         function salvarCarrinhoFirebase() {
             set(dbRef(db, `lojinha_virtual/usuarios/${currentUser.id}/carrinho_salvo`), carrinho);
         }
@@ -588,7 +578,6 @@
             });
         }
 
-        // --- VITRINE / CLIENTE ---
         function initStore() {
             document.getElementById('btn-cart').style.display = 'inline-block';
             carregarCarrinhoFirebase();
@@ -630,7 +619,6 @@
             });
         }
 
-        // LIGHTBOX
         window.abrirVisualizador = (imgsEncoded) => {
             const imgs = JSON.parse(decodeURIComponent(imgsEncoded));
             document.getElementById('viewer-main-img').src = imgs[0];
@@ -638,6 +626,7 @@
             gallery.innerHTML = imgs.map((url) => `<img src="${url}" class="viewer-thumb" onclick="document.getElementById('viewer-main-img').src='${url}'; destacarThumb(this);">`).join('');
             document.getElementById('image-viewer-modal').classList.add('active');
         };
+        
         window.fecharVisualizador = () => { document.getElementById('image-viewer-modal').classList.remove('active'); };
         window.destacarThumb = (el) => { document.querySelectorAll('.viewer-thumb').forEach(t => t.classList.remove('active')); el.classList.add('active'); };
 
@@ -728,7 +717,6 @@
             });
         };
 
-        // --- CARRINHO LOGICA ---
         document.getElementById('btn-cart').onclick = () => { document.getElementById('cart-modal').classList.add('open'); atualizarCarrinhoUI(); };
 
         window.addAoCarrinho = (prodId) => {
@@ -776,6 +764,73 @@
             document.getElementById('cart-total').innerText = total.toFixed(2);
         }
 
+        function crc16(str) {
+            let crc = 0xFFFF;
+            for (let c = 0; c < str.length; c++) {
+                crc ^= str.charCodeAt(c) << 8;
+                for (let i = 0; i < 8; i++) {
+                    if (crc & 0x8000) crc = (crc << 1) ^ 0x1021;
+                    else crc = crc << 1;
+                }
+            }
+            return (crc & 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
+        }
+
+        function generatePixPayload(pixKey, amount, merchantName="Boutique", merchantCity="Brasil", txid="TRICK") {
+            const formatSize = (str) => String(str.length).padStart(2, '0');
+            const gui = "br.gov.bcb.pix";
+            const accountInfo = `0014${gui}01${formatSize(pixKey)}${pixKey}`;
+            const merchantAcct = `26${formatSize(accountInfo)}${accountInfo}`;
+            const mcc = "52040000";
+            const currency = "5303986";
+            const amountStr = amount.toFixed(2);
+            const amountField = `54${formatSize(amountStr)}${amountStr}`;
+            const country = "5802BR";
+            
+            merchantName = merchantName.substring(0, 25).normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9 ]/g, "");
+            merchantCity = merchantCity.substring(0, 15).normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9 ]/g, "");
+            
+            const nameField = `59${formatSize(merchantName)}${merchantName}`;
+            const cityField = `60${formatSize(merchantCity)}${merchantCity}`;
+            const txidField = `05${formatSize(txid)}${txid}`;
+            const additionalData = `62${formatSize(txidField)}${txidField}`;
+            
+            const payloadStr = `000201${merchantAcct}${mcc}${currency}${amountField}${country}${nameField}${cityField}${additionalData}6304`;
+            const crc = crc16(payloadStr);
+            return payloadStr + crc;
+        }
+
+        function iniciarTimerPix(segundos) {
+            clearInterval(pixInterval);
+            let tempo = segundos;
+            const display = document.getElementById('pix-timer');
+            
+            pixInterval = setInterval(() => {
+                let min = Math.floor(tempo / 60);
+                let seg = tempo % 60;
+                display.innerText = `${min.toString().padStart(2, '0')}:${seg.toString().padStart(2, '0')}`;
+                
+                if (--tempo < 0) {
+                    clearInterval(pixInterval);
+                    window.cancelarPix(true);
+                }
+            }, 1000);
+        }
+
+        window.cancelarPix = (expirado = false) => {
+            clearInterval(pixInterval);
+            document.getElementById('pix-checkout-section').style.display = 'none';
+            document.getElementById('cart-normal-view').style.display = 'block';
+            if (expirado) showToast("Tempo esgotado! Seu código PIX expirou.");
+            else showToast("Pagamento PIX cancelado.");
+        };
+
+        window.copiarPix = () => {
+            const p = document.getElementById('pix-copia-cola');
+            p.select(); document.execCommand('copy');
+            showToast("Código Copiado! Cole no App do seu Banco.");
+        };
+
         window.finalizarCompra = () => {
             const itensParaComprar = carrinho.filter(i => i.selecionado);
             if(itensParaComprar.length === 0) return showToast("Sua sacola está vazia ou sem itens selecionados.");
@@ -787,6 +842,47 @@
             }
 
             const total = itensParaComprar.reduce((acc, item) => acc + parseFloat(item.preco), 0);
+            const formaPag = document.getElementById('checkout-payment').value;
+
+            if (formaPag === 'pix') {
+                if (!window.chavePixAdmin || window.chavePixAdmin.trim() === '') {
+                    return showToast("O Lojista ainda não cadastrou uma Chave PIX oficial.");
+                }
+
+                valorTotalPixTemporario = total;
+                document.getElementById('cart-normal-view').style.display = 'none';
+                
+                const numPedido = "TH" + Math.floor(1000+Math.random()*9000);
+                const payloadPix = generatePixPayload(window.chavePixAdmin.trim(), total, "TrickHouse Boutique", "Brasil", numPedido);
+                
+                document.getElementById('pix-valor-display').innerText = total.toFixed(2);
+                document.getElementById('pix-copia-cola').value = payloadPix;
+                document.getElementById('pix-qrcode').src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(payloadPix)}`;
+                document.getElementById('pix-checkout-section').style.display = 'block';
+                
+                iniciarTimerPix(10 * 60);
+                
+            } else {
+                processarPedidoFinal(total, formaPag);
+            }
+        };
+
+        window.confirmarEnvioPedidoPix = () => {
+            showLoading(true);
+            setTimeout(() => {
+                showLoading(false);
+                clearInterval(pixInterval);
+                processarPedidoFinal(valorTotalPixTemporario, 'pix');
+                
+                document.getElementById('pix-checkout-section').style.display = 'none';
+                document.getElementById('cart-normal-view').style.display = 'block';
+                
+                showToast("Excelente! Pagamento sinalizado ao Lojista.");
+            }, 2000);
+        };
+
+        function processarPedidoFinal(totalValor, formaPagamento) {
+            const itensParaComprar = carrinho.filter(i => i.selecionado);
             const codigoUnico = Math.floor(1000 + Math.random() * 9000).toString();
             
             const itensFormatados = itensParaComprar.map(item => {
@@ -800,8 +896,8 @@
             const pedidoRef = push(dbRef(db, 'lojinha_virtual/pedidos'));
             set(pedidoRef, {
                 clienteId: currentUser.id, clienteCelular: currentUser.celular || 'Não Informado',
-                itens: itensFormatados, total: total, endereco: currentUser.endereco,
-                formaPagamento: document.getElementById('checkout-payment').value, status: 'pendente',
+                itens: itensFormatados, total: totalValor, endereco: currentUser.endereco,
+                formaPagamento: formaPagamento, status: 'pendente',
                 codigo_entrega: codigoUnico, timestamp: Date.now()
             });
 
@@ -818,13 +914,12 @@
             carrinho = carrinho.filter(i => !i.selecionado);
             salvarCarrinhoFirebase();
 
-            showToast("Pedido gerado com elegância! Estoque atualizado.");
+            if (formaPagamento !== 'pix') showToast("Pedido gerado com sucesso! Estoque atualizado.");
             document.getElementById('cart-modal').classList.remove('open');
-        };
+        }
 
-        // --- ADMIN ---
         window.carregarConfigGlobais = () => {
-            get(child(dbRef(db), 'lojinha_virtual/configuracoes')).then((snap) => {
+            get(dbRef(db, 'lojinha_virtual/configuracoes')).then((snap) => {
                 if(snap.exists()){
                     const d = snap.val();
                     document.getElementById('setup-pix').value = d.pix || '';
@@ -852,10 +947,9 @@
                 pix: document.getElementById('setup-pix').value.trim(), 
                 tema: temaObj
             });
-            showToast("Configurações e Tema Salvos! O visual mudou para todos instantaneamente.");
+            showToast("Configurações Salvas! O visual e a Chave PIX foram atualizados.");
         };
 
-        // EDIÇÃO E CADASTRO
         window.carregarProdutoEdicao = () => {
             const id = document.getElementById('select-prod-edit').value;
             const btnExcluir = document.getElementById('btn-excluir-prod');
@@ -912,7 +1006,7 @@
             
             const btn = document.getElementById('btn-add-var');
             btn.innerText = "✓ Salvar Edição desta Cor";
-            showToast("Dados carregados. Edite as informações e clique em Salvar Edição.");
+            showToast("Dados carregados. Edite e clique em Salvar Edição.");
         };
 
         function renderListaVariacoesTmp() {
@@ -936,7 +1030,7 @@
         window.addVariacaoTmp = async () => {
             const cor = document.getElementById('var-cor').value;
             const corNome = document.getElementById('var-cor-nome').value.trim();
-            if(!corNome) return showToast("Por favor, digite o NOME da cor (ex: Preto, Vermelho) para ser salvo corretamente.");
+            if(!corNome) return showToast("Digite o NOME da cor (ex: Preto, Vermelho).");
             
             const fileInput = document.getElementById('var-img-file');
             const urlsTexto = document.getElementById('var-img-url').value.trim();
@@ -1005,7 +1099,6 @@
             document.getElementById('btn-excluir-prod').style.display = 'none';
         };
 
-        // PESQUISA ESTOQUE
         window.filtrarEstoque = () => {
             const termo = document.getElementById('busca-estoque').value.toLowerCase();
             const itens = document.querySelectorAll('.estoque-item');
@@ -1043,7 +1136,7 @@
                             htmlEstoque += `
                                 <div class="estoque-item ${classeEstoque}" data-busca="${stringBusca}">
                                     <div style="display: flex; align-items: center; gap: 15px;">
-                                        <img src="${imgBase}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px; cursor: zoom-in; border: 1px solid rgba(255,255,255,0.2);" onclick="abrirVisualizador('${imgsEnc}')" title="Clique para ampliar">
+                                        <img src="${imgBase}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px; cursor: zoom-in; border: 1px solid rgba(255,255,255,0.2);" onclick="abrirVisualizador('${imgsEnc}')">
                                         <div>
                                             <div style="color: #888; font-size: 0.75rem;">Cód: ${p.codigo || 'N/A'}</div>
                                             <strong>${p.nome}</strong><br>
@@ -1067,7 +1160,7 @@
                 const list = document.getElementById('admin-orders-list');
                 list.innerHTML = '';
                 
-                get(child(dbRef(db), 'lojinha_virtual/usuarios')).then((usnap) => {
+                get(dbRef(db, 'lojinha_virtual/usuarios')).then((usnap) => {
                     const usuarios = usnap.val() || {};
                     const options = Object.entries(usuarios).filter(([k, v]) => v.role === 'entregador').map(([k, v]) => `<option value="${k}">${v.email}</option>`).join('');
 
@@ -1091,7 +1184,7 @@
                                     <div style="margin-top:15px; display:flex; flex-wrap:wrap; gap: 10px;">
                                         <select id="sel-ent-${id}" style="flex: 1; min-width: 150px; margin: 0;"><option value="">Vincular Entregador</option>${options}</select>
                                         <input type="number" id="prazo-horas-${id}" placeholder="Prazo em horas (Ex: 24)" style="width: 120px; margin: 0;">
-                                        <button onclick="despacharPedido('${id}')" style="padding: 10px; font-size:0.8rem;">Despachar</button>
+                                        <button onclick="despacharPedido('${id}')" style="padding: 10px; font-size:0.8rem;">Confirmar $ / Despachar</button>
                                     </div>
                                 ` : `<p style="color:#00c850; font-size:0.9rem; margin-top:10px; font-weight:bold;">✓ Em andamento com: ${p.entregadorId}</p>`}
                             </div>
@@ -1118,7 +1211,6 @@
             document.getElementById('entregador-email').value = ''; document.getElementById('entregador-senha').value = '';
         };
 
-        // --- ENTREGADOR ---
         function initDelivery() {
             onValue(dbRef(db, 'lojinha_virtual/pedidos'), (snapshot) => {
                 const pedidos = snapshot.val() || {};
@@ -1151,7 +1243,6 @@
             } else { showToast("Código inválido! O cliente precisa passar o código correto."); }
         };
 
-        // --- INICIALIZAÇÃO E CHECAGEM DE LOGIN SALVO ---
         window.addEventListener('DOMContentLoaded', () => {
             const savedUserStr = localStorage.getItem('trickhouse_user_v2');
             if (savedUserStr) {
@@ -1161,7 +1252,7 @@
                     else if (currentUser.role === 'entregador') { navigate('delivery-screen'); initDelivery(); }
                     else { navigate('store-screen'); initStore(); }
                 } catch(e) {
-                    navigate('auth-screen'); // Se der erro no parser
+                    navigate('auth-screen'); 
                 }
             } else {
                 navigate('auth-screen');
