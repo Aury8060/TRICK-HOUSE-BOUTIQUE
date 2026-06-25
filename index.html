@@ -5,135 +5,176 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trick House - Boutique</title>
     <link rel="manifest" href="manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Montserrat:wght@300;500;700&family=Roboto:wght@300;500&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
     <style>
         :root {
+            /* Variáveis CSS baseadas em temas (modificáveis pelo Admin) */
             --bg-color: #0a0a0a;
             --premium-gold: #D4AF37;
-            --premium-light-gold: #F3E5AB;
-            --card-bg: rgba(20, 20, 20, 0.7);
-            --border-color: rgba(212, 175, 55, 0.2);
             --text-color: #f5f5f5;
-            --spotlight: radial-gradient(circle at 50% 30%, rgba(212, 175, 55, 0.25) 0%, transparent 65%);
+            --main-font: 'Cinzel', serif;
+            
+            /* Constantes e Efeitos */
+            --card-bg: rgba(20, 20, 20, 0.7);
+            --border-color: rgba(255, 255, 255, 0.15); /* Coringa para bordas */
+            --spotlight: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 65%);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cinzel', 'Didot', 'Segoe UI', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--main-font); transition: background-color 0.4s, color 0.4s; }
         
-        body { background: var(--bg-color); color: var(--text-color); min-height: 100vh; overflow-x: hidden; }
+        /* O background foi ajustado para aceitar imagens via JS no construtor de temas */
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            min-height: 100vh; 
+            overflow-x: hidden; 
+        }
 
-        .screen { display: none; padding: 30px 20px; max-width: 1200px; margin: 0 auto; }
+        .screen { display: none; padding: 30px 20px; max-width: 1200px; margin: 0 auto; width: 100%; }
         .screen.active { display: block; }
 
         /* HEADER SOFISTICADO */
         header {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 20px 40px; background: rgba(10, 10, 10, 0.9);
-            backdrop-filter: blur(15px); border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+            padding: 20px 40px; background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(15px); border-bottom: 1px solid var(--premium-gold);
             position: sticky; top: 0; z-index: 100;
         }
         
-        header h2 { font-size: 1.8rem; letter-spacing: 4px; color: var(--premium-gold); text-shadow: 0 0 12px rgba(212, 175, 55, 0.3); }
+        header h2 { font-size: 1.8rem; letter-spacing: 4px; color: var(--premium-gold); text-shadow: 0 0 12px rgba(0,0,0,0.5); }
+
+        .header-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; }
 
         /* BOTÕES & INPUTS */
         button {
             background: transparent; color: var(--premium-gold); border: 1px solid var(--premium-gold);
-            padding: 12px 24px; border-radius: 0px; cursor: pointer; font-weight: 600;
-            letter-spacing: 2px; text-transform: uppercase; transition: all 0.4s ease;
+            padding: 12px 24px; border-radius: 4px; cursor: pointer; font-weight: bold;
+            letter-spacing: 1px; text-transform: uppercase; transition: all 0.3s ease;
         }
-        button:hover { background: var(--premium-gold); color: #000; box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); }
-        button.secondary { border-color: #555; color: #aaa; }
-        button.secondary:hover { background: #333; color: #fff; box-shadow: none; }
-        
-        /* BOTÃO DE MÚSICA */
-        .btn-music-toggle {
-            background: transparent; border: 1px solid var(--premium-gold); color: var(--premium-gold);
-            border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem; cursor: pointer; transition: 0.3s; padding: 0; margin-right: 15px; opacity: 0.5;
-        }
-        .btn-music-toggle.playing { opacity: 1; box-shadow: 0 0 10px rgba(212, 175, 55, 0.5); background: rgba(212, 175, 55, 0.1); }
+        button:hover { background: var(--premium-gold); color: #000; box-shadow: 0 0 15px rgba(0,0,0,0.4); }
+        button.secondary { border-color: #777; color: #ddd; }
+        button.secondary:hover { background: #333; color: #fff; box-shadow: none; border-color: #555; }
 
         input, select, textarea {
-            width: 100%; padding: 14px; margin: 10px 0; background: rgba(15, 15, 15, 0.8); 
-            border: 1px solid rgba(212, 175, 55, 0.15); color: #fff; border-radius: 2px; transition: 0.3s;
+            width: 100%; padding: 14px; margin: 10px 0; background: rgba(0, 0, 0, 0.6); 
+            border: 1px solid var(--border-color); color: var(--text-color); border-radius: 4px; transition: 0.3s;
         }
-        input:focus, select:focus { border-color: var(--premium-gold); outline: none; box-shadow: 0 0 8px rgba(212, 175, 55, 0.2); }
+        input:focus, select:focus, textarea:focus { border-color: var(--premium-gold); outline: none; box-shadow: 0 0 8px rgba(0,0,0,0.5); background: rgba(0,0,0,0.8); }
 
         /* AUTENTICAÇÃO */
         #auth-screen {
-            max-width: 450px; margin: 80px auto; background: var(--card-bg);
-            padding: 40px; border-radius: 4px; border: 1px solid var(--border-color);
-            backdrop-filter: blur(10px); text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            max-width: 450px; margin: 8vh auto; background: var(--card-bg);
+            padding: 40px; border-radius: 8px; border: 1px solid var(--border-color);
+            backdrop-filter: blur(15px); text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.8);
         }
 
-        /* VITRINE & NICHOS */
-        .vitrine-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 35px; padding: 20px 0; }
+        /* VITRINE & NICHOS (Layout Inteligente) */
+        .vitrine-grid { 
+            display: grid; 
+            /* Começa com cards de no mínimo 260px (PC/Tablet grandes) */
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
+            gap: 30px; 
+            padding: 20px 0; 
+        }
         
         .nicho {
             position: relative; background: var(--card-bg); border: 1px solid var(--border-color);
-            border-radius: 4px; height: 440px; display: flex; flex-direction: column;
-            align-items: center; justify-content: flex-end; padding: 25px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.7); overflow: hidden; transition: all 0.4s;
+            border-radius: 8px; height: 420px; display: flex; flex-direction: column;
+            align-items: center; justify-content: flex-end; padding: 25px 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6); overflow: hidden; transition: all 0.3s;
+            backdrop-filter: blur(10px);
         }
         .nicho::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--spotlight); pointer-events: none; z-index: 0;
         }
-        .nicho:hover { border-color: var(--premium-gold); transform: translateY(-10px); }
+        .nicho:hover { border-color: var(--premium-gold); transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.8); }
 
-        .produto-img-container { flex-grow: 1; width: 100%; display: flex; justify-content: center; align-items: center; margin-bottom: 20px; z-index: 1; cursor: zoom-in; position: relative;}
-        .produto-img { max-width: 100%; max-height: 220px; object-fit: contain; filter: drop-shadow(0 15px 20px rgba(0,0,0,0.7)); transition: transform 0.4s; }
-        .nicho:hover .produto-img { transform: scale(1.08); }
+        .produto-img-container { flex-grow: 1; width: 100%; display: flex; justify-content: center; align-items: center; margin-bottom: 15px; z-index: 1; cursor: zoom-in; position: relative;}
+        .produto-img { max-width: 100%; max-height: 200px; object-fit: contain; filter: drop-shadow(0 15px 15px rgba(0,0,0,0.5)); transition: transform 0.4s; }
+        .nicho:hover .produto-img { transform: scale(1.05); }
 
         .produto-info { text-align: center; z-index: 1; width: 100%; }
-        .produto-info h3 { font-weight: 400; letter-spacing: 1px; margin-bottom: 5px; font-size: 1.1rem; }
+        .produto-info h3 { font-weight: bold; letter-spacing: 1px; margin-bottom: 5px; font-size: 1.1rem; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
         .produto-preco { color: var(--premium-gold); font-size: 1.3em; font-weight: bold; margin: 10px 0; }
 
-        .cores-paleta { display: flex; justify-content: center; gap: 10px; margin: 10px 0; }
+        .cores-paleta { display: flex; justify-content: center; gap: 8px; margin: 10px 0; flex-wrap: wrap; }
         .cor-bolinha {
-            width: 22px; height: 22px; border-radius: 50%; cursor: pointer;
-            border: 2px solid transparent; box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.4); transition: 0.3s;
+            width: 24px; height: 24px; border-radius: 50%; cursor: pointer;
+            border: 2px solid rgba(255,255,255,0.2); box-shadow: 0 2px 5px rgba(0,0,0,0.5); transition: 0.3s;
         }
-        .cor-bolinha.active { border-color: #fff; transform: scale(1.2); }
+        .cor-bolinha.active { border-color: var(--premium-gold); transform: scale(1.2); }
 
         /* DASHBOARD ADMIN & TABS */
-        .admin-nav { display: flex; gap: 10px; overflow-x: auto; border-bottom: 1px solid var(--border-color); margin-bottom: 30px; padding-bottom: 10px; }
-        .admin-nav button { border: none; background: transparent; padding: 10px 20px; font-size: 0.9rem; color: #888; border-bottom: 2px solid transparent; }
+        .admin-nav { display: flex; gap: 5px; overflow-x: auto; border-bottom: 1px solid var(--border-color); margin-bottom: 30px; padding-bottom: 5px; -webkit-overflow-scrolling: touch; }
+        .admin-nav button { border: none; background: transparent; padding: 12px 20px; font-size: 0.9rem; color: #888; border-bottom: 2px solid transparent; white-space: nowrap; }
         .admin-nav button.active { color: var(--premium-gold); border-bottom-color: var(--premium-gold); }
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.4s ease; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .dashboard-panel { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px; border-radius: 4px; margin-bottom: 30px; }
-        .dashboard-panel h3 { color: var(--premium-gold); margin-bottom: 20px; letter-spacing: 2px; text-transform: uppercase; font-size: 1.1rem; }
+        .dashboard-panel { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px; border-radius: 8px; margin-bottom: 30px; backdrop-filter: blur(10px); }
+        .dashboard-panel h3 { color: var(--premium-gold); margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase; font-size: 1.1rem; }
 
         /* ESTOQUE CORES */
-        .estoque-item { padding: 15px; margin-bottom: 10px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.1); }
-        .estoque-ok { background: rgba(0, 200, 80, 0.1); border-left: 4px solid #00c850; }
-        .estoque-alerta { background: rgba(255, 165, 0, 0.1); border-left: 4px solid #ffa500; }
-        .estoque-critico { background: rgba(255, 50, 50, 0.15); border-left: 4px solid #ff3232; }
+        .estoque-item { padding: 15px; margin-bottom: 10px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-color); background: rgba(0,0,0,0.4); }
+        .estoque-ok { border-left: 4px solid #00c850; }
+        .estoque-alerta { border-left: 4px solid #ffa500; }
+        .estoque-critico { border-left: 4px solid #ff3232; }
 
         /* TOAST E LIGHTBOX E CARRINHO */
-        #toast { position: fixed; bottom: 30px; right: 30px; background: #111; color: var(--premium-gold); border: 1px solid var(--premium-gold); padding: 15px 30px; font-weight: bold; letter-spacing: 1px; display: none; z-index: 3000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        #cart-modal { position: fixed; top: 0; right: -450px; width: 450px; height: 100%; background: #0f0f0f; border-left: 1px solid var(--premium-gold); padding: 30px; transition: 0.4s ease; z-index: 500; overflow-y: auto; }
-        #cart-modal.open { right: 0; }
+        #toast { position: fixed; bottom: 30px; right: 30px; background: #000; color: var(--premium-gold); border: 1px solid var(--premium-gold); padding: 15px 30px; font-weight: bold; border-radius: 4px; letter-spacing: 1px; display: none; z-index: 3000; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        #cart-modal { position: fixed; top: 0; right: -450px; width: 450px; height: 100%; background: rgba(10,10,10,0.98); border-left: 1px solid var(--premium-gold); padding: 30px; transition: right 0.4s ease; z-index: 500; overflow-y: auto; backdrop-filter: blur(20px); }
+        #cart-modal.open { right: 0; box-shadow: -10px 0 30px rgba(0,0,0,0.8); }
         
         #image-viewer-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 2000; display: none; justify-content: center; align-items: center; flex-direction: column; backdrop-filter: blur(10px); }
         #image-viewer-modal.active { display: flex; }
-        .close-viewer { position: absolute; top: 20px; right: 40px; color: var(--premium-gold); font-size: 3rem; cursor: pointer; transition: 0.3s; }
+        .close-viewer { position: absolute; top: 20px; right: 30px; color: var(--premium-gold); font-size: 3rem; cursor: pointer; transition: 0.3s; }
         .close-viewer:hover { color: #fff; transform: scale(1.1); }
         .viewer-main-img { max-width: 90vw; max-height: 70vh; object-fit: contain; margin-bottom: 25px; }
         .viewer-gallery { display: flex; gap: 15px; overflow-x: auto; max-width: 90vw; padding-bottom: 10px; }
-        .viewer-thumb { width: 80px; height: 80px; object-fit: cover; cursor: pointer; border: 2px solid transparent; border-radius: 4px; transition: 0.3s; opacity: 0.6; }
+        .viewer-thumb { width: 70px; height: 70px; object-fit: cover; cursor: pointer; border: 2px solid transparent; border-radius: 4px; transition: 0.3s; opacity: 0.6; }
         .viewer-thumb:hover, .viewer-thumb.active { border-color: var(--premium-gold); opacity: 1; }
         #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; display: none; justify-content: center; align-items: center; color: var(--premium-gold); font-size: 1.5rem; letter-spacing: 2px; }
+
+        /* ========================================================
+           ✨ AUTO-RESPONSIVIDADE INTELIGENTE (Mobile & Tablets) ✨ 
+           ======================================================== */
+        @media (max-width: 850px) {
+            header { flex-direction: column; padding: 15px; gap: 15px; text-align: center; }
+            .header-controls { justify-content: center; width: 100%; }
+            #user-greeting { margin-right: 10px; display: block; width: 100%; margin-bottom: 10px; }
+            
+            /* Nichos se adaptam para caber no celular (até 2 colunas dependendo do tamanho) */
+            .vitrine-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding: 10px 0; }
+            .nicho { height: auto; min-height: 380px; padding: 15px 10px; }
+            .produto-img { max-height: 140px; }
+            .produto-info h3 { font-size: 0.95rem; }
+            .produto-preco { font-size: 1.1rem; }
+            button { padding: 10px 15px; font-size: 0.8rem; }
+            
+            /* Ajustes Finos */
+            .screen { padding: 20px 15px; }
+            .dashboard-panel { padding: 20px 15px; }
+            
+            /* Carrinho Ocupa a tela toda no celular */
+            #cart-modal { width: 100vw; right: -100vw; padding: 20px; border-left: none; }
+            
+            /* Toast menor e centralizado no mobile */
+            #toast { right: 50%; transform: translateX(50%); bottom: 20px; width: 90%; text-align: center; font-size: 0.9rem; padding: 12px; }
+        }
+
+        @media (max-width: 400px) {
+            /* Em telas muito muito pequenas (iPhone SE antigo), força 1 coluna para não espremer */
+            .vitrine-grid { grid-template-columns: 1fr; }
+            .nicho { height: auto; min-height: auto; }
+            .produto-img { max-height: 180px; }
+        }
     </style>
 </head>
 <body>
-
-    <script src="https://www.youtube.com/iframe_api"></script>
-    <div id="yt-player-container" style="position: absolute; top: 0; left: 0; width: 1px; height: 1px; opacity: 0.01; overflow: hidden; pointer-events: none; z-index: -1;">
-        <div id="yt-player"></div>
-    </div>
 
     <div id="toast">Mensagem</div>
     <div id="loading-overlay">Processando Arquivos... Aguarde.</div>
@@ -146,65 +187,70 @@
 
     <header id="main-header" style="display: none;">
         <h2 onclick="location.reload()" style="cursor:pointer;">TRICK HOUSE</h2>
-        <div style="display: flex; align-items: center;">
-            <span id="user-greeting" style="margin-right: 25px; letter-spacing: 1px; font-size: 0.9rem;"></span>
-            <button id="btn-music" class="btn-music-toggle" onclick="toggleMusica()" title="Tocar/Pausar Música">🎵</button>
-            <button id="btn-perfil" style="margin-right: 10px; padding: 8px 16px;">Perfil</button>
-            <button id="btn-cart" style="display:none; margin-right: 10px; padding: 8px 16px;">🛒 Sacola (<span id="cart-count">0</span>)</button>
+        <div class="header-controls">
+            <span id="user-greeting"></span>
+            <button id="btn-perfil" style="padding: 8px 16px;">Perfil</button>
+            <button id="btn-cart" style="display:none; padding: 8px 16px;">🛒 Sacola (<span id="cart-count">0</span>)</button>
             <button id="btn-logout" class="secondary" style="padding: 8px 16px;">Sair</button>
         </div>
     </header>
 
     <div id="cart-modal">
         <h3 style="color: var(--premium-gold); letter-spacing: 2px; margin-bottom: 20px;">SUA SACOLA</h3>
-        <p style="font-size: 0.8rem; color:#888; margin-bottom: 15px;">Marque apenas os itens que deseja finalizar agora. O restante ficará salvo para depois.</p>
+        <p style="font-size: 0.8rem; color:#aaa; margin-bottom: 15px;">Marque apenas os itens que deseja finalizar agora. O restante ficará salvo para depois.</p>
         <div id="cart-items"></div>
-        <h2 style="margin: 25px 0; font-weight: 300;">Total Selecionado: <span style="color:var(--premium-gold)">R$ <span id="cart-total">0.00</span></span></h2>
+        <h2 style="margin: 25px 0; font-weight: 300; border-top: 1px solid var(--border-color); padding-top: 15px;">
+            Total Selecionado: <br><span style="color:var(--premium-gold)">R$ <span id="cart-total">0.00</span></span>
+        </h2>
         
         <div id="checkout-section">
             <h4 style="color: #aaa; font-size: 0.9rem; margin-bottom: 5px;">Forma de Pagamento:</h4>
-            <div id="payment-info-view" style="background: rgba(255,255,255,0.05); padding: 12px; font-size: 0.9rem; border-left: 2px solid var(--premium-gold); margin-bottom: 15px;">
+            <div id="payment-info-view" style="background: rgba(0,0,0,0.5); padding: 12px; font-size: 0.9rem; border-left: 2px solid var(--premium-gold); margin-bottom: 15px; border-radius: 4px;">
                 Carregando dados...
             </div>
             
             <select id="checkout-payment">
                 <option value="pix">PIX</option>
-                <option value="cartao">Cartão de Crédito</option>
+                <option value="cartao">Cartão de Crédito (Na entrega)</option>
             </select>
-            <button onclick="finalizarCompra()" style="width: 100%; margin-top: 15px;">Confirmar e Finalizar</button>
+            <button onclick="finalizarCompra()" style="width: 100%; margin-top: 15px; font-size: 1rem; padding: 15px;">Confirmar e Finalizar</button>
         </div>
-        <button onclick="document.getElementById('cart-modal').classList.remove('open')" class="secondary" style="width: 100%; margin-top: 15px;">Fechar</button>
+        <button onclick="document.getElementById('cart-modal').classList.remove('open')" class="secondary" style="width: 100%; margin-top: 15px;">Continuar Comprando</button>
     </div>
 
     <div id="app">
         
         <div id="auth-screen" class="screen active">
-            <h1 style="color: var(--premium-gold); margin-bottom: 1px; font-weight: 300; letter-spacing: 4px;">TRICK HOUSE</h1>
-            <h1 style="color: var(--premium-gold); margin-bottom: 80px; font-weight: 300; letter-spacing: 4px;">BOUTIQUE</h1>
+            <h1 style="color: var(--premium-gold); margin-bottom: 5px; font-weight: 300; letter-spacing: 4px;">TRICK HOUSE</h1>
+            <h1 style="color: var(--text-color); margin-bottom: 40px; font-weight: 300; letter-spacing: 6px; font-size: 1.2rem; opacity: 0.8;">BOUTIQUE DIGITAL</h1>
+            
             <input type="text" id="auth-user" placeholder="E-mail ou Usuário">
             <input type="password" id="auth-pass" placeholder="Senha">
             <div id="auth-pass-confirm-div" style="display: none;">
                 <input type="password" id="auth-pass-confirm" placeholder="Confirme a Senha">
             </div>
             
-            <button onclick="realizarAcesso()" style="width: 100%; margin-top: 15px;">Entrar</button>
+            <button onclick="realizarAcesso()" style="width: 100%; margin-top: 15px; padding: 15px;">Entrar no Acervo</button>
             <button onclick="alternarModoAuth()" class="secondary" style="width: 100%; margin-top: 15px;" id="btn-toggle-auth">Criar Conta Elegante</button>
-            <p style="margin-top: 20px; font-size: 0.85em; cursor: pointer; color: #888; letter-spacing: 1px;" onclick="esqueciSenha()">Esqueci minha senha</p>
+            <p style="margin-top: 25px; font-size: 0.85em; cursor: pointer; color: #aaa; letter-spacing: 1px; text-decoration: underline;" onclick="esqueciSenha()">Esqueci minha senha</p>
         </div>
 
         <div id="profile-screen" class="screen">
             <h2 style="color: var(--premium-gold); letter-spacing: 2px; margin-bottom: 20px;">SEU PERFIL PREMIUM</h2>
             <div class="dashboard-panel">
                 <input type="text" id="prof-nome" placeholder="Seu Nome Completo">
-                <input type="text" id="prof-celular" placeholder="Número de Celular com DDD">
-                <textarea id="prof-endereco" placeholder="Endereço Completo de Entrega" rows="3"></textarea>
-                <button onclick="salvarPerfilCliente()">Salvar Alterações</button>
-                <button onclick="navigate('store-screen')" class="secondary" style="margin-left:10px;">Voltar à Vitrine</button>
+                <input type="text" id="prof-celular" placeholder="Número de Celular com DDD (WhatsApp)">
+                <textarea id="prof-endereco" placeholder="Endereço Completo de Entrega (Rua, Nº, Bairro, Referência)" rows="3"></textarea>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button onclick="salvarPerfilCliente()" style="flex: 1;">Salvar Alterações</button>
+                    <button onclick="navigate('store-screen')" class="secondary">Voltar</button>
+                </div>
             </div>
         </div>
 
         <div id="store-screen" class="screen">
-            <div style="display: flex; gap: 15px; margin-bottom: 30px; overflow-x: auto; padding-bottom: 10px;" id="category-filters"></div>
+            <div style="display: flex; gap: 10px; margin-bottom: 30px; overflow-x: auto; padding-bottom: 10px; -webkit-overflow-scrolling: touch;" id="category-filters"></div>
+            
             <div class="vitrine-grid" id="vitrine-container"></div>
             
             <div id="client-orders" class="dashboard-panel" style="margin-top: 50px; display: none;">
@@ -214,14 +260,14 @@
         </div>
 
         <div id="admin-screen" class="screen">
-            <h2 style="letter-spacing: 3px; margin-bottom: 20px;">DIRETORIA GERAL</h2>
+            <h2 style="letter-spacing: 3px; margin-bottom: 20px; color: var(--premium-gold);">DIRETORIA GERAL</h2>
             
             <div class="admin-nav">
-                <button class="tab-link active" onclick="abrirAbaAdmin('tab-produtos')">Cadastro / Edição</button>
+                <button class="tab-link active" onclick="abrirAbaAdmin('tab-produtos')">Vitrine</button>
                 <button class="tab-link" onclick="abrirAbaAdmin('tab-estoque')">Estoque</button>
                 <button class="tab-link" onclick="abrirAbaAdmin('tab-demandas')">Demandas</button>
-                <button class="tab-link" onclick="abrirAbaAdmin('tab-entregadores')">Entregadores</button>
-                <button class="tab-link" onclick="abrirAbaAdmin('tab-config')">Configurações</button>
+                <button class="tab-link" onclick="abrirAbaAdmin('tab-entregadores')">Equipe</button>
+                <button class="tab-link" onclick="abrirAbaAdmin('tab-config')">Aparência & Conf</button>
             </div>
 
             <div id="tab-produtos" class="tab-content active">
@@ -239,18 +285,18 @@
                     <input type="text" id="prod-categoria-adm" placeholder="Categoria (ex: Camisas)">
                     <input type="number" id="prod-preco-adm" placeholder="Valor de Venda (R$)">
                     
-                    <div style="border: 1px solid rgba(212,175,55,0.2); padding: 15px; margin: 15px 0; background: rgba(0,0,0,0.2);">
+                    <div style="border: 1px solid var(--border-color); padding: 15px; margin: 15px 0; background: rgba(0,0,0,0.3); border-radius: 4px;">
                         <h4 style="color: var(--premium-gold); font-size: 0.9rem; margin-bottom: 15px;">Adicionar Variação de Cor / Estoque / Fotos</h4>
                         
-                        <div style="display:flex; gap:10px; margin-bottom:10px;">
+                        <div style="display:flex; flex-wrap: wrap; gap:10px; margin-bottom:10px;">
                             <input type="color" id="var-cor" value="#D4AF37" style="height:45px; width:60px; padding:2px; cursor:pointer;" title="Escolha a cor">
-                            <input type="text" id="var-cor-nome" placeholder="Nome da Cor (Obrigatório, ex: Preto)" style="margin:0;">
-                            <input type="number" id="var-estoque" placeholder="Qtd. Estoque" style="margin:0;">
-                            <input type="text" id="var-tamanho" placeholder="Tamanhos (ex: P, M)" style="margin:0;">
+                            <input type="text" id="var-cor-nome" placeholder="Nome da Cor (Obrigatório)" style="flex:1; min-width: 150px; margin:0;">
+                            <input type="number" id="var-estoque" placeholder="Estoque" style="width: 100px; margin:0;">
+                            <input type="text" id="var-tamanho" placeholder="Tamanhos" style="width: 120px; margin:0;">
                         </div>
                         
                         <label style="color: #aaa; font-size: 0.85rem; display:block; margin-bottom:5px;">📂 Arquivos Locais (Deixe vazio caso esteja apenas editando estoque):</label>
-                        <input type="file" id="var-img-file" accept="image/*" multiple style="background: rgba(255,255,255,0.05);">
+                        <input type="file" id="var-img-file" accept="image/*" multiple style="background: rgba(0,0,0,0.5);">
                         
                         <label style="color: #aaa; font-size: 0.85rem; display:block; margin-top:10px; margin-bottom:5px;">🌐 Ou Links (separar por vírgula):</label>
                         <input type="text" id="var-img-url" placeholder="http://link1.png, http://link2.png">
@@ -260,9 +306,9 @@
                         <button onclick="addVariacaoTmp()" id="btn-add-var" class="secondary" style="font-size: 0.8rem; width: 100%;">+ Adicionar Cor ao Produto</button>
                     </div>
 
-                    <div style="display: flex; gap: 10px;">
-                        <button onclick="salvarProduto()" style="flex: 1;">Salvar Produto</button>
-                        <button onclick="excluirProdutoAtual()" class="secondary" id="btn-excluir-prod" style="display: none; border-color: red; color: red;">Excluir</button>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button onclick="salvarProduto()" style="flex: 1; min-width: 200px;">Salvar Produto</button>
+                        <button onclick="excluirProdutoAtual()" class="secondary" id="btn-excluir-prod" style="display: none; border-color: red; color: red;">Excluir Permanentemente</button>
                     </div>
                 </div>
             </div>
@@ -271,10 +317,10 @@
                 <div class="dashboard-panel">
                     <h3>Controle de Estoque Inteligente</h3>
                     <input type="text" id="busca-estoque" placeholder="🔍 Buscar por código, nome ou cor..." style="margin-bottom: 20px;" onkeyup="filtrarEstoque()">
-                    <div style="display: flex; gap: 15px; margin-bottom: 20px; font-size: 0.85rem; color:#aaa;">
-                        <span><span style="display:inline-block; width:12px; height:12px; background:#00c850; border-radius:50%;"></span> Ideal (> 30)</span>
-                        <span><span style="display:inline-block; width:12px; height:12px; background:#ffa500; border-radius:50%;"></span> Alerta (6 a 30)</span>
-                        <span><span style="display:inline-block; width:12px; height:12px; background:#ff3232; border-radius:50%;"></span> Crítico (<= 5)</span>
+                    <div style="display: flex; gap: 15px; margin-bottom: 20px; font-size: 0.85rem; color:#aaa; flex-wrap: wrap;">
+                        <span><span style="display:inline-block; width:12px; height:12px; background:#00c850; border-radius:50%;"></span> Ideal </span>
+                        <span><span style="display:inline-block; width:12px; height:12px; background:#ffa500; border-radius:50%;"></span> Alerta </span>
+                        <span><span style="display:inline-block; width:12px; height:12px; background:#ff3232; border-radius:50%;"></span> Crítico </span>
                     </div>
                     <div id="estoque-list"></div>
                 </div>
@@ -289,26 +335,57 @@
 
             <div id="tab-entregadores" class="tab-content">
                 <div class="dashboard-panel">
-                    <h3>Cadastrar Novo Entregador</h3>
+                    <h3>Cadastrar Novo Membro da Equipe Logística</h3>
                     <input type="email" id="entregador-email" placeholder="E-mail de Login do Entregador">
-                    <input type="password" id="entregador-senha" placeholder="Senha do Entregador">
+                    <input type="password" id="entregador-senha" placeholder="Senha Temporária">
                     <button onclick="cadastrarEntregador()">Registrar Entregador</button>
                 </div>
             </div>
 
             <div id="tab-config" class="tab-content">
                 <div class="dashboard-panel">
-                    <h3>Configurações Globais</h3>
-                    <input type="text" id="setup-pix" placeholder="Chave PIX ou Instruções de Pagamento">
-                    <textarea id="setup-playlist" placeholder="Links de Músicas MP3 ou YouTube (Evite clipes oficiais da VEVO/Artistas, pois bloqueiam Embed)" rows="3"></textarea>
-                    <button onclick="salvarConfigGlobais()">Salvar Configurações</button>
+                    <h3>Configurações Globais & PIX</h3>
+                    <input type="text" id="setup-pix" placeholder="Chave PIX Oficial ou Mensagem de Cobrança">
+                    
+                    <div style="border: 1px solid var(--border-color); padding: 20px; margin: 30px 0; background: rgba(0,0,0,0.3); border-radius: 8px;">
+                        <h4 style="color: var(--premium-gold); font-size: 1.1rem; margin-bottom: 20px;">🎨 Construtor de Temas (Aparência da Loja)</h4>
+                        <p style="font-size: 0.8rem; color:#aaa; margin-bottom: 20px;">Personalize as cores e a aparência da sua boutique. As mudanças afetam você e todos os seus clientes em tempo real.</p>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                            <div>
+                                <label style="font-size: 0.8rem; color: #ddd; display:block; margin-bottom: 5px;">Cor do Fundo Geral:</label>
+                                <input type="color" id="theme-bg" value="#0a0a0a" style="height: 50px; padding: 2px; cursor: pointer;">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.8rem; color: #ddd; display:block; margin-bottom: 5px;">Cor de Destaque (Ouro):</label>
+                                <input type="color" id="theme-gold" value="#D4AF37" style="height: 50px; padding: 2px; cursor: pointer;">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.8rem; color: #ddd; display:block; margin-bottom: 5px;">Cor dos Textos:</label>
+                                <input type="color" id="theme-text" value="#f5f5f5" style="height: 50px; padding: 2px; cursor: pointer;">
+                            </div>
+                        </div>
+
+                        <label style="font-size: 0.8rem; color: #ddd; display:block; margin-bottom: 5px;">Estilo da Letra (Fonte Principal):</label>
+                        <select id="theme-font">
+                            <option value="'Cinzel', serif">Cinzel (Clássica/Elegante - Padrão TrickHouse)</option>
+                            <option value="'Montserrat', sans-serif">Montserrat (Moderna/Arredondada)</option>
+                            <option value="'Playfair Display', serif">Playfair (Boutique Francesa)</option>
+                            <option value="'Roboto', sans-serif">Roboto (Simples e Limpa)</option>
+                        </select>
+
+                        <label style="font-size: 0.8rem; color: #ddd; display:block; margin-top: 15px; margin-bottom: 5px;">Link de uma Imagem de Fundo (Opcional):</label>
+                        <input type="text" id="theme-bg-img" placeholder="http://seusite.com/fundo.jpg (Deixe em branco para fundo liso)">
+                    </div>
+
+                    <button onclick="salvarConfigGlobais()" style="width: 100%; padding: 15px; font-size: 1.1rem;">Salvar e Aplicar Layout</button>
                 </div>
             </div>
 
         </div>
 
         <div id="delivery-screen" class="screen">
-            <h2 style="letter-spacing: 2px; margin-bottom: 30px;">PAINEL LOGÍSTICO</h2>
+            <h2 style="letter-spacing: 2px; margin-bottom: 30px; text-align: center;">PAINEL LOGÍSTICO</h2>
             <div class="dashboard-panel">
                 <h3>Minhas Demandas Vinculadas</h3>
                 <div id="delivery-orders-list"></div>
@@ -339,95 +416,9 @@
         let editVariacaoIndex = -1;
         let carrinho = [];
         let produtosGlobais = {};
-        let configGlobais = {};
         let selecoesVitrine = {};
 
-        // --- SISTEMA DE ÁUDIO MISTO (YT + MP3) INTELIGENTE ---
-        let playlistGlobal = [];
-        let indexMusicaAtual = 0;
-        let musicaTocando = false;
-        let audioMp3 = new Audio();
-        let ytPlayerObj = null;
-        let playerPronto = false;
-
-        window.onYouTubeIframeAPIReady = function() {
-            ytPlayerObj = new YT.Player('yt-player', {
-                height: '1', width: '1',
-                playerVars: { 'autoplay': 1, 'controls': 0, 'showinfo': 0, 'rel': 0 },
-                events: {
-                    'onReady': () => { 
-                        playerPronto = true; 
-                        if(playlistGlobal.length > 0 && currentUser) iniciarMusica(); 
-                    },
-                    'onStateChange': (e) => { 
-                        if(e.data === YT.PlayerState.ENDED) tocarProximaMusica(); 
-                    },
-                    'onError': (e) => {
-                        console.error("Erro no player do YT (provavelmente vídeo bloqueado pelo autor):", e.data);
-                        showToast("Aviso: O vídeo escolhido não permite reprodução fora do YouTube. Pulando faixa...");
-                        tocarProximaMusica(); 
-                    }
-                }
-            });
-        };
-
-        function extrairIdYt(url) {
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            const match = url.match(regExp);
-            return (match && match[2].length === 11) ? match[2] : null;
-        }
-
-        function inicializarPlaylist(texto) {
-            if(!texto) return;
-            playlistGlobal = texto.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-            if(playlistGlobal.length > 0 && currentUser && playerPronto) iniciarMusica();
-        }
-
-        window.toggleMusica = () => {
-            const btn = document.getElementById('btn-music');
-            if (musicaTocando) {
-                audioMp3.pause();
-                if(ytPlayerObj && playerPronto && typeof ytPlayerObj.pauseVideo === 'function') ytPlayerObj.pauseVideo();
-                musicaTocando = false;
-                btn.classList.remove('playing');
-            } else {
-                iniciarMusica();
-            }
-        };
-
-        window.iniciarMusica = () => {
-            if(playlistGlobal.length === 0) return;
-            const link = playlistGlobal[indexMusicaAtual];
-            const ytId = extrairIdYt(link);
-            const btn = document.getElementById('btn-music');
-            
-            audioMp3.pause();
-            if(ytPlayerObj && playerPronto && typeof ytPlayerObj.stopVideo === 'function') ytPlayerObj.stopVideo();
-
-            musicaTocando = true;
-            btn.classList.add('playing');
-
-            if (ytId && ytPlayerObj && playerPronto) {
-                ytPlayerObj.loadVideoById(ytId);
-                ytPlayerObj.playVideo();
-            } else if (!ytId) {
-                audioMp3.src = link;
-                audioMp3.play().catch(e => {
-                    console.log('O Navegador bloqueou o Autoplay. O usuário precisa clicar no botão de música.');
-                    musicaTocando = false;
-                    btn.classList.remove('playing');
-                });
-            }
-        };
-
-        function tocarProximaMusica() {
-            if(playlistGlobal.length === 0) return;
-            indexMusicaAtual = (indexMusicaAtual + 1) % playlistGlobal.length;
-            iniciarMusica();
-        }
-        audioMp3.onended = tocarProximaMusica;
-
-
+        // UTILITÁRIOS GERAIS
         window.showToast = (msg) => {
             const t = document.getElementById('toast'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 4000);
         };
@@ -443,14 +434,17 @@
             });
         };
 
+        // NAVEGAÇÃO
         function navigate(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
             if(screenId !== 'auth-screen') {
                 document.getElementById('main-header').style.display = 'flex';
-                document.getElementById('user-greeting').innerText = `Logado como: ${currentUser.nome || currentUser.id}`;
-                if(playlistGlobal.length > 0 && !musicaTocando) iniciarMusica(); // Tenta tocar ao logar
-            } else { document.getElementById('main-header').style.display = 'none'; }
+                document.getElementById('user-greeting').innerText = `Olá, ${currentUser.nome || currentUser.id}`;
+            } else { 
+                document.getElementById('main-header').style.display = 'none'; 
+            }
+            window.scrollTo(0,0);
         }
 
         window.abrirAbaAdmin = (tabId) => {
@@ -466,7 +460,50 @@
             document.getElementById('auth-pass-confirm-div').style.display = isRegisterMode ? 'block' : 'none';
         };
 
-        // --- AUTH ---
+        // --- SISTEMA DE THEME CUSTOMIZER ---
+        function aplicarTemaReal(temaObj) {
+            if(!temaObj) return;
+            const root = document.documentElement;
+            if(temaObj.bg) root.style.setProperty('--bg-color', temaObj.bg);
+            if(temaObj.gold) root.style.setProperty('--premium-gold', temaObj.gold);
+            if(temaObj.text) root.style.setProperty('--text-color', temaObj.text);
+            if(temaObj.font) root.style.setProperty('--main-font', temaObj.font);
+            
+            if(temaObj.bgImg && temaObj.bgImg.trim() !== '') {
+                document.body.style.backgroundImage = `url('${temaObj.bgImg}')`;
+                document.body.style.backgroundSize = 'cover';
+                document.body.style.backgroundAttachment = 'fixed';
+                document.body.style.backgroundPosition = 'center';
+            } else {
+                document.body.style.backgroundImage = 'none';
+            }
+        }
+
+        // Listener Global de Tema para todos (Cliente, Admin, Entregador)
+        onValue(dbRef(db, 'lojinha_virtual/configuracoes'), (snap) => {
+            if(snap.exists()) {
+                const conf = snap.val();
+                if(document.getElementById('payment-info-view')) {
+                    document.getElementById('payment-info-view').innerText = conf.pix || "À combinar.";
+                }
+                if(conf.tema) aplicarTemaReal(conf.tema);
+            }
+        });
+
+
+        // --- AUTH & PERSISTÊNCIA (LOCALSTORAGE) ---
+        function salvarLogin() {
+            localStorage.setItem('trickhouse_user_v2', JSON.stringify(currentUser));
+        }
+
+        function fazerLogout() {
+            localStorage.removeItem('trickhouse_user_v2');
+            currentUser = null;
+            navigate('auth-screen');
+        }
+
+        document.getElementById('btn-logout').onclick = fazerLogout;
+
         window.realizarAcesso = async () => {
             const userOrEmail = document.getElementById('auth-user').value.trim();
             const pass = document.getElementById('auth-pass').value;
@@ -474,6 +511,7 @@
 
             if (userOrEmail === 'au.costa' && pass === '80605276') {
                 currentUser = { id: 'Au.costa', role: 'admin', nome: 'Diretor Geral' };
+                salvarLogin();
                 navigate('admin-screen'); initAdmin(); carregarConfigGlobais(); return;
             }
 
@@ -486,11 +524,14 @@
                     else {
                         const newUser = { email: userOrEmail, senha: pass, role: 'cliente', nome: '', celular: '', endereco: '' };
                         set(dbRef(db, `lojinha_virtual/usuarios/${userKey}`), newUser);
-                        currentUser = { id: userKey, ...newUser }; navigate('store-screen'); initStore();
+                        currentUser = { id: userKey, ...newUser }; 
+                        salvarLogin();
+                        navigate('store-screen'); initStore();
                     }
                 } else {
                     if (snapshot.exists() && snapshot.val().senha === pass) {
                         currentUser = { id: userKey, ...snapshot.val() };
+                        salvarLogin();
                         if (currentUser.role === 'admin') { navigate('admin-screen'); initAdmin(); carregarConfigGlobais(); }
                         else if (currentUser.role === 'entregador') { navigate('delivery-screen'); initDelivery(); }
                         else { navigate('store-screen'); initStore(); }
@@ -527,10 +568,11 @@
             const nome = document.getElementById('prof-nome').value.trim(), cel = document.getElementById('prof-celular').value.trim(), end = document.getElementById('prof-endereco').value.trim();
             update(dbRef(db, `lojinha_virtual/usuarios/${currentUser.id}`), { nome, celular: cel, endereco: end });
             currentUser.nome = nome; currentUser.celular = cel; currentUser.endereco = end;
+            salvarLogin(); // Atualiza dados no localStorage também
             showToast("Perfil atualizado perfeitamente."); navigate('store-screen');
         };
 
-        // --- LÓGICA DO CARRINHO PERSISTENTE (FIREBASE) ---
+        // --- LÓGICA DO CARRINHO PERSISTENTE ---
         function salvarCarrinhoFirebase() {
             set(dbRef(db, `lojinha_virtual/usuarios/${currentUser.id}/carrinho_salvo`), carrinho);
         }
@@ -538,36 +580,18 @@
         function carregarCarrinhoFirebase() {
             onValue(dbRef(db, `lojinha_virtual/usuarios/${currentUser.id}/carrinho_salvo`), (snapshot) => {
                 const val = snapshot.val();
-                if(val) {
-                    carrinho = Array.isArray(val) ? val : Object.values(val);
-                } else {
-                    carrinho = [];
-                }
-                
+                carrinho = val ? (Array.isArray(val) ? val : Object.values(val)) : [];
                 carrinho.forEach(i => { if(i.selecionado === undefined) i.selecionado = true; });
 
-                if(document.getElementById('cart-count')) {
-                    document.getElementById('cart-count').innerText = carrinho.length;
-                }
-                if(document.getElementById('cart-modal').classList.contains('open')) {
-                    atualizarCarrinhoUI();
-                }
+                if(document.getElementById('cart-count')) document.getElementById('cart-count').innerText = carrinho.length;
+                if(document.getElementById('cart-modal').classList.contains('open')) atualizarCarrinhoUI();
             });
         }
 
         // --- VITRINE / CLIENTE ---
         function initStore() {
             document.getElementById('btn-cart').style.display = 'inline-block';
-            
             carregarCarrinhoFirebase();
-
-            get(child(dbRef(db), 'lojinha_virtual/configuracoes')).then((snap) => {
-                if(snap.exists()){
-                    configGlobais = snap.val();
-                    document.getElementById('payment-info-view').innerText = configGlobais.pix || "À combinar.";
-                    inicializarPlaylist(configGlobais.playlist);
-                }
-            });
 
             onValue(dbRef(db, 'lojinha_virtual/produtos'), (snapshot) => {
                 produtosGlobais = snapshot.val() || {}; renderVitrine();
@@ -582,11 +606,11 @@
                 if(meus.length > 0) {
                     document.getElementById('client-orders').style.display = 'block';
                     list.innerHTML = meus.map(([id, p]) => `
-                        <div style="border:1px solid var(--border-color); padding: 15px; margin-bottom: 12px; background: rgba(0,0,0,0.3);">
+                        <div style="border:1px solid var(--border-color); padding: 15px; margin-bottom: 12px; background: rgba(0,0,0,0.5); border-radius: 4px;">
                             <strong>Ordem:</strong> ...${id.substring(id.length - 8)} <br>
                             <strong>Status:</strong> <span style="color:var(--premium-gold)">${p.status.toUpperCase()}</span> <br>
                             <div class="timer-regressivo" data-entrega-ate="${p.entrega_ate || ''}">Calculando...</div>
-                            ${p.status === 'em_entrega' ? `<div style="margin-top:10px; padding:10px; border: 1px dashed var(--premium-gold);"><p style="color:var(--premium-light-gold); font-weight:bold;">Código de Recebimento:</p><span style="font-size:1.8rem; font-weight:bold; letter-spacing:4px; color:#fff;">${p.codigo_entrega}</span></div>` : ''}
+                            ${p.status === 'em_entrega' ? `<div style="margin-top:10px; padding:15px; border: 1px dashed var(--premium-gold); background: rgba(212,175,55,0.1); border-radius: 4px; text-align: center;"><p style="color:var(--premium-gold); font-size: 0.8rem; margin-bottom: 5px;">Código p/ Recebimento:</p><span style="font-size:2rem; font-weight:bold; letter-spacing:6px; color:#fff;">${p.codigo_entrega}</span></div>` : ''}
                         </div>
                     `).join('');
                 } else { document.getElementById('client-orders').style.display = 'none'; }
@@ -596,12 +620,12 @@
         function atualizarContadoresPrazos() {
             document.querySelectorAll('.timer-regressivo').forEach(div => {
                 const limite = div.getAttribute('data-entrega-ate');
-                if(!limite) { div.innerText = "Aguardando definição de prazo."; return; }
+                if(!limite) { div.innerText = "Aguardando definição de prazo logístico."; return; }
                 const restante = parseInt(limite) - Date.now();
                 if(restante <= 0) { div.innerText = "Prazo finalizado!"; div.style.color = "red"; } 
                 else {
                     const h = Math.floor(restante / 3600000), m = Math.floor((restante % 3600000) / 60000), s = Math.floor((restante % 60000) / 1000);
-                    div.innerHTML = `Tempo restante: <span style="color:var(--premium-gold); font-weight:bold;">${h}h ${m}m ${s}s</span>`;
+                    div.innerHTML = `Restante: <span style="color:var(--premium-gold); font-weight:bold;">${h}h ${m}m ${s}s</span>`;
                 }
             });
         }
@@ -641,7 +665,7 @@
                 imgEl.style.opacity = '0.4';
                 imgEl.style.filter = 'grayscale(100%)';
                 badge.style.display = 'block';
-                btnCarrinho.outerHTML = `<button id="btn-cart-${prodId}" class="secondary" style="width:100%; font-size:0.8rem; cursor:not-allowed; background:#333; color:#777; border-color:#333;" disabled>🚫 Esgotado nesta Cor</button>`;
+                btnCarrinho.outerHTML = `<button id="btn-cart-${prodId}" class="secondary" style="width:100%; font-size:0.8rem; cursor:not-allowed;" disabled>🚫 Esgotado</button>`;
             } else {
                 imgEl.style.opacity = '1';
                 imgEl.style.filter = 'none';
@@ -675,7 +699,7 @@
 
                 const btnCarrinho = temEstoque 
                     ? `<button id="btn-cart-${id}" onclick="addAoCarrinho('${id}')" style="width:100%; font-size:0.8rem;">Adicionar à Sacola</button>`
-                    : `<button id="btn-cart-${id}" class="secondary" style="width:100%; font-size:0.8rem; cursor:not-allowed; background:#333; color:#777; border-color:#333;" disabled>🚫 Esgotado nesta Cor</button>`;
+                    : `<button id="btn-cart-${id}" class="secondary" style="width:100%; font-size:0.8rem; cursor:not-allowed;" disabled>🚫 Esgotado</button>`;
 
                 const badgeEsgotado = `<div id="badge-esgotado-${id}" style="display: ${temEstoque ? 'none' : 'block'}; position:absolute; top:25px; right:-30px; background:red; color:white; padding:5px 40px; font-weight:bold; font-size: 0.8rem; transform: rotate(45deg); z-index:10; box-shadow: 0 5px 10px rgba(0,0,0,0.5); letter-spacing: 2px;">ESGOTADO</div>`;
                 const imgStyle = !temEstoque ? `opacity: 0.4; filter: grayscale(100%);` : ``;
@@ -704,7 +728,7 @@
             });
         };
 
-        // --- CARRINHO COM CHECKBOX E INTELIGÊNCIA DINÂMICA ---
+        // --- CARRINHO LOGICA ---
         document.getElementById('btn-cart').onclick = () => { document.getElementById('cart-modal').classList.add('open'); atualizarCarrinhoUI(); };
 
         window.addAoCarrinho = (prodId) => {
@@ -712,33 +736,21 @@
             const idxCor = selecoesVitrine[prodId] || 0;
             const varEscolhida = prod.variacoes[idxCor];
             
-            carrinho.push({ 
-                id: prodId, 
-                nome: `${prod.nome} (${varEscolhida.corNome})`, 
-                preco: prod.preco, 
-                varIdx: idxCor,
-                selecionado: true 
-            });
+            carrinho.push({ id: prodId, nome: `${prod.nome} (${varEscolhida.corNome})`, preco: prod.preco, varIdx: idxCor, selecionado: true });
             salvarCarrinhoFirebase(); 
             showToast("Item salvo na sua sacola!");
         };
 
-        window.removerDoCarrinho = (index) => { 
-            carrinho.splice(index, 1); 
-            salvarCarrinhoFirebase(); 
-        };
+        window.removerDoCarrinho = (index) => { carrinho.splice(index, 1); salvarCarrinhoFirebase(); };
 
-        window.toggleCartItem = (index) => {
-            carrinho[index].selecionado = !carrinho[index].selecionado;
-            salvarCarrinhoFirebase(); 
-        };
+        window.toggleCartItem = (index) => { carrinho[index].selecionado = !carrinho[index].selecionado; salvarCarrinhoFirebase(); };
 
         function atualizarCarrinhoUI() {
             const container = document.getElementById('cart-items');
             container.innerHTML = ''; let total = 0;
             
             carrinho.forEach((item, idx) => {
-                if(item.selecionado) { total += parseFloat(item.preco); }
+                if(item.selecionado) total += parseFloat(item.preco);
                 
                 let nomeExibicao = item.nome;
                 if(produtosGlobais[item.id] && produtosGlobais[item.id].variacoes[item.varIdx]) {
@@ -749,7 +761,7 @@
                 const styleTexto = !item.selecionado ? 'text-decoration: line-through; opacity: 0.4;' : '';
                 
                 container.innerHTML += `
-                    <div class="cart-item" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #222; padding-bottom: 12px; margin-bottom: 15px;">
+                    <div class="cart-item" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; margin-bottom: 15px;">
                         <div style="display: flex; align-items: center; gap: 10px; flex-grow: 1;">
                             <input type="checkbox" ${checkedStr} onchange="toggleCartItem(${idx})" style="cursor: pointer; width: 22px; height: 22px; margin: 0; flex-shrink: 0;">
                             <span style="${styleTexto} font-size: 0.9rem;">${nomeExibicao}</span>
@@ -766,9 +778,13 @@
 
         window.finalizarCompra = () => {
             const itensParaComprar = carrinho.filter(i => i.selecionado);
-            
-            if(itensParaComprar.length === 0) return showToast("Sua sacola está vazia ou não há itens selecionados.");
-            if(!currentUser.endereco) return showToast("Por favor, preencha seu endereço no Perfil.");
+            if(itensParaComprar.length === 0) return showToast("Sua sacola está vazia ou sem itens selecionados.");
+            if(!currentUser.endereco) {
+                showToast("Por favor, preencha seu endereço no Perfil antes de comprar.");
+                document.getElementById('cart-modal').classList.remove('open');
+                navigate('profile-screen');
+                return;
+            }
 
             const total = itensParaComprar.reduce((acc, item) => acc + parseFloat(item.preco), 0);
             const codigoUnico = Math.floor(1000 + Math.random() * 9000).toString();
@@ -812,16 +828,31 @@
                 if(snap.exists()){
                     const d = snap.val();
                     document.getElementById('setup-pix').value = d.pix || '';
-                    document.getElementById('setup-playlist').value = d.playlist || '';
+                    if(d.tema) {
+                        document.getElementById('theme-bg').value = d.tema.bg || '#0a0a0a';
+                        document.getElementById('theme-gold').value = d.tema.gold || '#D4AF37';
+                        document.getElementById('theme-text').value = d.tema.text || '#f5f5f5';
+                        document.getElementById('theme-font').value = d.tema.font || "'Cinzel', serif";
+                        document.getElementById('theme-bg-img').value = d.tema.bgImg || '';
+                    }
                 }
             });
         };
+
         window.salvarConfigGlobais = () => {
+            const temaObj = {
+                bg: document.getElementById('theme-bg').value,
+                gold: document.getElementById('theme-gold').value,
+                text: document.getElementById('theme-text').value,
+                font: document.getElementById('theme-font').value,
+                bgImg: document.getElementById('theme-bg-img').value.trim()
+            };
+            
             set(dbRef(db, 'lojinha_virtual/configuracoes'), { 
                 pix: document.getElementById('setup-pix').value.trim(), 
-                playlist: document.getElementById('setup-playlist').value.trim() 
+                tema: temaObj
             });
-            showToast("Configurações salvas. Dê um F5 para atualizar as músicas de fundo.");
+            showToast("Configurações e Tema Salvos! O visual mudou para todos instantaneamente.");
         };
 
         // EDIÇÃO E CADASTRO
@@ -854,7 +885,7 @@
 
         window.excluirProdutoAtual = () => {
             const id = document.getElementById('prod-id-atual').value;
-            if(id && confirm("Tem certeza que deseja excluir esse produto da vitrine?")) {
+            if(id && confirm("Tem certeza que deseja excluir esse produto da vitrine de forma permanente?")) {
                 remove(dbRef(db, `lojinha_virtual/produtos/${id}`));
                 showToast("Produto excluído.");
                 document.getElementById('select-prod-edit').value = "";
@@ -866,8 +897,6 @@
             if(editVariacaoIndex === index) {
                 editVariacaoIndex = -1;
                 document.getElementById('btn-add-var').innerText = "+ Adicionar Cor ao Produto";
-                document.getElementById('btn-add-var').style.backgroundColor = "transparent";
-                document.getElementById('btn-add-var').style.color = "var(--premium-gold)";
             }
             variacoesTmp.splice(index, 1);
             renderListaVariacoesTmp();
@@ -883,26 +912,22 @@
             
             const btn = document.getElementById('btn-add-var');
             btn.innerText = "✓ Salvar Edição desta Cor";
-            btn.style.backgroundColor = "var(--premium-gold)";
-            btn.style.color = "#000";
-            
-            showToast("Dados carregados. Edite as informações e salve.");
+            showToast("Dados carregados. Edite as informações e clique em Salvar Edição.");
         };
 
         function renderListaVariacoesTmp() {
             document.getElementById('var-lista-tmp').innerHTML = variacoesTmp.map((v, idx) => `
-                <div style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); padding: 10px; border-radius: 4px; display: flex; align-items: center; justify-content: space-between;">
+                <div style="background: rgba(0,0,0,0.5); border: 1px solid var(--border-color); padding: 15px; border-radius: 4px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
                     <div style="display: flex; align-items: center; gap: 15px;">
-                        <div style="width: 30px; height: 30px; background:${v.cor}; border: 1px solid #fff; border-radius: 4px; box-shadow: 0 0 5px rgba(0,0,0,0.5);"></div>
+                        <div style="width: 35px; height: 35px; background:${v.cor}; border: 1px solid #fff; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.5);"></div>
                         <div style="font-size: 0.85rem; color: #ddd; line-height: 1.4;">
-                            <strong style="color:var(--premium-gold);">${v.corNome}</strong><br>
-                            Estoque: ${v.estoque} unidades<br>
-                            Fotos anexadas: ${v.imgs.length}
+                            <strong style="color:var(--premium-gold); font-size: 1rem;">${v.corNome}</strong><br>
+                            Estoque: ${v.estoque} UN | Fotos: ${v.imgs.length}
                         </div>
                     </div>
                     <div style="display: flex; gap: 8px;">
-                        <button onclick="editarVariacaoTmp(${idx})" style="padding: 4px 10px; color: #000; background: var(--premium-gold); border: none; font-size: 0.8rem; border-radius: 4px;">Editar</button>
-                        <button onclick="removerVariacaoTmp(${idx})" style="padding: 4px 10px; color: red; border-color: red; background: transparent; border: 1px solid red; font-size: 0.8rem; border-radius: 4px;">Remover</button>
+                        <button onclick="editarVariacaoTmp(${idx})" style="padding: 6px 12px; color: #000; background: var(--premium-gold); border: none; font-size: 0.8rem; border-radius: 4px;">Editar</button>
+                        <button onclick="removerVariacaoTmp(${idx})" style="padding: 6px 12px; color: red; border-color: red; background: transparent; border: 1px solid red; font-size: 0.8rem; border-radius: 4px;">Excluir</button>
                     </div>
                 </div>
             `).join('');
@@ -938,11 +963,7 @@
                 
                 variacoesTmp[editVariacaoIndex] = { cor, corNome, imgs: urlsFinais, tamanhos: tam, estoque: estoque };
                 editVariacaoIndex = -1;
-                
-                const btn = document.getElementById('btn-add-var');
-                btn.innerText = "+ Adicionar Cor ao Produto";
-                btn.style.backgroundColor = "transparent";
-                btn.style.color = "var(--premium-gold)";
+                document.getElementById('btn-add-var').innerText = "+ Adicionar Cor ao Produto";
                 showToast("Cor editada com sucesso no rascunho!");
             } else {
                 if(urlsFinais.length === 0) return showToast("Adicione ao menos uma foto (Local ou Link) para a nova cor.");
@@ -1014,7 +1035,7 @@
                     if(p.variacoes) {
                         p.variacoes.forEach((v, idx) => {
                             const est = v.estoque || 0;
-                            let classeEstoque = est > 30 ? 'estoque-ok' : (est > 5 ? 'estoque-alerta' : 'estoque-critico');
+                            let classeEstoque = est > 10 ? 'estoque-ok' : (est > 4 ? 'estoque-alerta' : 'estoque-critico');
                             const imgBase = v.imgs && v.imgs.length > 0 ? v.imgs[0] : 'https://via.placeholder.com/50';
                             const imgsEnc = encodeURIComponent(JSON.stringify(v.imgs || [imgBase]));
                             const stringBusca = `${(p.codigo || '')} ${p.nome} ${v.corNome}`.toLowerCase();
@@ -1053,26 +1074,26 @@
                     Object.entries(pedidos).forEach(([id, p]) => {
                         if(p.status === 'entregue') return;
                         list.innerHTML += `
-                            <div style="border: 1px solid var(--premium-gold); padding: 20px; margin-bottom:15px; background: rgba(0,0,0,0.4);">
-                                <strong>Pedido ID:</strong> ${id} <br>
+                            <div style="border: 1px solid var(--premium-gold); padding: 20px; margin-bottom:15px; background: rgba(0,0,0,0.5); border-radius: 4px;">
+                                <strong style="color:var(--premium-gold);">Pedido ID:</strong> ${id} <br>
                                 <strong>Cliente ID:</strong> ${p.clienteId} | Tel: ${p.clienteCelular} <br>
                                 <strong>Destino:</strong> ${p.endereco} <br>
                                 <strong>Total:</strong> R$ ${parseFloat(p.total).toFixed(2)} | <strong>Pagamento:</strong> ${p.formaPagamento.toUpperCase()} <br>
                                 
-                                <div style="background: rgba(255,255,255,0.05); padding: 10px; margin: 10px 0;">
-                                    <strong>Itens da Sacola:</strong><br>
+                                <div style="background: rgba(255,255,255,0.05); padding: 10px; margin: 15px 0; border-radius: 4px;">
+                                    <strong style="color:#aaa;">Itens da Sacola:</strong><br>
                                     ${p.itens.map(i => `- ${i.nome} (R$ ${i.preco})`).join('<br>')}
                                 </div>
 
-                                <strong>Status Logístico:</strong> <span style="color:var(--premium-gold);">${p.status.toUpperCase()}</span> <br>
+                                <strong>Status Logístico:</strong> <span style="color:var(--premium-gold); font-weight:bold;">${p.status.toUpperCase()}</span> <br>
                                 
                                 ${p.status === 'pendente' ? `
-                                    <div style="margin-top:10px;">
-                                        <select id="sel-ent-${id}"><option value="">Vincular Entregador</option>${options}</select>
-                                        <input type="number" id="prazo-horas-${id}" placeholder="Prazo em horas (Ex: 24)" style="width:200px; display:inline-block; margin-right:10px;">
-                                        <button onclick="despacharPedido('${id}')" style="padding: 6px 12px; font-size:0.8rem;">Despachar</button>
+                                    <div style="margin-top:15px; display:flex; flex-wrap:wrap; gap: 10px;">
+                                        <select id="sel-ent-${id}" style="flex: 1; min-width: 150px; margin: 0;"><option value="">Vincular Entregador</option>${options}</select>
+                                        <input type="number" id="prazo-horas-${id}" placeholder="Prazo em horas (Ex: 24)" style="width: 120px; margin: 0;">
+                                        <button onclick="despacharPedido('${id}')" style="padding: 10px; font-size:0.8rem;">Despachar</button>
                                     </div>
-                                ` : `<p style="color:#aaa; font-size:0.85rem; margin-top:5px;">✓ Em andamento com: ${p.entregadorId}</p>`}
+                                ` : `<p style="color:#00c850; font-size:0.9rem; margin-top:10px; font-weight:bold;">✓ Em andamento com: ${p.entregadorId}</p>`}
                             </div>
                         `;
                     });
@@ -1106,33 +1127,47 @@
                     .sort((a, b) => a[1].timestamp - b[1].timestamp);
 
                 const list = document.getElementById('delivery-orders-list');
-                if(minhasDemandas.length === 0) { list.innerHTML = "<p style='color:#777;'>Nenhuma entrega pendente.</p>"; return; }
+                if(minhasDemandas.length === 0) { list.innerHTML = "<p style='color:#777; text-align:center;'>Nenhuma entrega pendente.</p>"; return; }
 
                 list.innerHTML = minhasDemandas.map(([id, p], index) => `
-                    <div style="border: 1px solid #fff; padding: 20px; margin-bottom: 15px; background: ${index === 0 ? 'rgba(212,175,55,0.08)' : 'transparent'};">
-                        <h4>${index === 0 ? '🔴 PRIORIDADE 1' : `Entrega #${index + 1}`}</h4>
+                    <div style="border: 1px solid var(--border-color); padding: 20px; margin-bottom: 15px; background: ${index === 0 ? 'rgba(212,175,55,0.1)' : 'rgba(0,0,0,0.5)'}; border-radius: 8px;">
+                        <h4 style="color:var(--premium-gold); margin-bottom: 10px;">${index === 0 ? '🔴 PRIORIDADE MÁXIMA' : `Entrega #${index + 1}`}</h4>
                         <p style="margin: 5px 0;"><strong>Endereço:</strong> ${p.endereco}</p>
-                        <a href="https://maps.google.com/?q=${encodeURIComponent(p.endereco)}" target="_blank" style="color:var(--premium-gold); font-weight:bold; display:block; margin: 10px 0;">📍 Abrir GPS Maps</a>
-                        <input type="text" id="cod-valida-${id}" placeholder="Código Destinatário (4 dígitos)" style="width: 280px; display:inline-block; margin-right:10px;">
-                        <button onclick="confirmarEntregaReal(${index}, '${id}', '${p.codigo_entrega}')">Validar</button>
+                        <a href="https://maps.google.com/?q=${encodeURIComponent(p.endereco)}" target="_blank" style="color:#00f2fe; text-decoration: underline; font-weight:bold; display:block; margin: 15px 0;">📍 Abrir GPS Maps</a>
+                        
+                        <div style="display:flex; flex-wrap:wrap; gap: 10px; margin-top: 20px;">
+                            <input type="text" id="cod-valida-${id}" placeholder="Cód. do Cliente (4 dígitos)" style="flex:1; min-width:180px; margin:0;">
+                            <button onclick="confirmarEntregaReal(${index}, '${id}', '${p.codigo_entrega}')">Validar Código</button>
+                        </div>
                     </div>
                 `).join('');
             });
         }
 
         window.confirmarEntregaReal = (index, pedidoId, codigoCorreto) => {
-            if(index !== 0) return showToast("Finalize a Prioridade 1 primeiro.");
+            if(index !== 0) return showToast("Finalize a Prioridade Máxima primeiro.");
             if(document.getElementById(`cod-valida-${pedidoId}`).value.trim() === codigoCorreto) {
-                update(dbRef(db, `lojinha_virtual/pedidos/${pedidoId}`), { status: 'entregue' }); showToast("Entrega validada!");
-            } else { showToast("Código inválido!"); }
+                update(dbRef(db, `lojinha_virtual/pedidos/${pedidoId}`), { status: 'entregue' }); showToast("Entrega validada com Sucesso!");
+            } else { showToast("Código inválido! O cliente precisa passar o código correto."); }
         };
 
-        document.getElementById('btn-logout').onclick = () => { 
-            currentUser = null; 
-            navigate('auth-screen'); 
-            audioMp3.pause();
-            if(ytPlayerObj && typeof ytPlayerObj.stopVideo === 'function') ytPlayerObj.stopVideo();
-        };
+        // --- INICIALIZAÇÃO E CHECAGEM DE LOGIN SALVO ---
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUserStr = localStorage.getItem('trickhouse_user_v2');
+            if (savedUserStr) {
+                try {
+                    currentUser = JSON.parse(savedUserStr);
+                    if (currentUser.role === 'admin') { navigate('admin-screen'); initAdmin(); carregarConfigGlobais(); }
+                    else if (currentUser.role === 'entregador') { navigate('delivery-screen'); initDelivery(); }
+                    else { navigate('store-screen'); initStore(); }
+                } catch(e) {
+                    navigate('auth-screen'); // Se der erro no parser
+                }
+            } else {
+                navigate('auth-screen');
+            }
+        });
+
     </script>
 </body>
 </html>
